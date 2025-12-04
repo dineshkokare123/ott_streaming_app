@@ -1,6 +1,21 @@
-# StreamVibe - OTT Platform App
+# 🎬 StreamVibe - Premium OTT Platform
 
-A beautiful and feature-rich OTT (Over-The-Top) streaming platform built with Flutter, featuring real-time API integration, user authentication, and a Netflix-inspired UI.
+<div align="center">
+
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+**A beautiful and feature-rich OTT (Over-The-Top) streaming platform built with Flutter**
+
+Featuring real-time API integration, advanced animations, liquid glass UI, and a Netflix-inspired design
+
+[Features](#-features) • [Screenshots](#-screenshots) • [Installation](#-setup-instructions) • [Documentation](#-documentation)
+
+</div>
+
+---
 
 ## ✨ Features
 
@@ -28,6 +43,23 @@ A beautiful and feature-rich OTT (Over-The-Top) streaming platform built with Fl
 - **Modern UI Components** - Premium-looking cards and layouts
 - **Gradient Effects** - Eye-catching gradient overlays
 - **Backdrop Blur** - Frosted glass effects throughout the app
+
+## 📸 Screenshots
+
+<div align="center">
+
+### Splash Screen & Authentication
+*Coming soon - Add your app screenshots here*
+
+### Home & Content Browsing
+*Coming soon - Add your app screenshots here*
+
+### Content Details & Video Player
+*Coming soon - Add your app screenshots here*
+
+</div>
+
+> **Note**: To add screenshots, create a `screenshots` folder in your repository and update the paths above.
 
 ## 📋 Prerequisites
 
@@ -235,6 +267,82 @@ For issues or questions:
 2. Review Flutter and Firebase documentation
 3. Ensure all setup steps are completed
 
+## 📚 Documentation
+
+This project includes comprehensive documentation:
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide for faster onboarding
+- **[CHECKLIST.md](CHECKLIST.md)** - Configuration checklist
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Detailed project overview
+- **[LIQUID_GLASS_IMPLEMENTATION.md](LIQUID_GLASS_IMPLEMENTATION.md)** - Glass effect guide
+- **[ADVANCED_FEATURES.md](ADVANCED_FEATURES.md)** - Advanced features breakdown
+- **[GITHUB_PUSH_GUIDE.md](GITHUB_PUSH_GUIDE.md)** - GitHub deployment guide
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 🗺️ Roadmap
+
+- [x] Firebase authentication
+- [x] TMDB API integration
+- [x] Video playback
+- [x] Liquid glass UI
+- [x] Advanced animations
+- [ ] Offline mode
+- [ ] Download functionality
+- [ ] Continue watching
+- [ ] User reviews
+- [ ] Social features
+- [ ] Multi-profile support
+- [ ] Parental controls
+- [ ] Cast to TV
+
+## 📊 Project Stats
+
+- **Language**: Dart
+- **Framework**: Flutter
+- **State Management**: Provider
+- **Backend**: Firebase
+- **API**: TMDB
+- **Lines of Code**: 5000+
+- **Widgets**: 50+
+- **Screens**: 8
+- **Features**: 20+
+
+## 🌟 Show Your Support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Dinesh Kokare**
+
+- GitHub: [@dineshkokare](https://github.com/dineshkokare)
+
+## 🙏 Acknowledgments
+
+- [TMDB](https://www.themoviedb.org/) for providing the API
+- [Firebase](https://firebase.google.com/) for backend services
+- Flutter community for amazing packages
+- Netflix for design inspiration
+
 ---
 
+<div align="center">
+
 **Built with ❤️ using Flutter**
+
+Made with passion for creating beautiful mobile experiences
+
+</div>
