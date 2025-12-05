@@ -11,6 +11,7 @@ import 'providers/recommendations_provider.dart';
 import 'providers/download_provider.dart';
 import 'providers/reviews_provider.dart';
 import 'providers/profile_provider.dart';
+import 'providers/notification_provider.dart';
 import 'screens/splash_screen.dart';
 import 'constants/app_colors.dart';
 
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DownloadProvider()),
         ChangeNotifierProvider(create: (_) => ReviewsProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: MaterialApp(
         title: 'StreamVibe',

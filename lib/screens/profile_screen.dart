@@ -10,6 +10,7 @@ import 'watch_history_screen.dart';
 import 'downloads_screen.dart';
 import 'profile_selection_screen.dart';
 import 'parental_controls_screen.dart';
+import 'notifications_screen.dart';
 import '../providers/profile_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -214,7 +215,12 @@ class ProfileScreen extends StatelessWidget {
                         icon: Icons.notifications_outlined,
                         title: 'Notifications',
                         onTap: () {
-                          _showComingSoonDialog(context, 'Notifications');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationsScreen(),
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(height: 12),
