@@ -1,29 +1,29 @@
 // API Configuration Guide
 //
 // This file contains all the API endpoints and configuration for the OTT platform.
-// You need to get a FREE API key from TMDB to use this app.
+// API keys are now loaded from the .env file for security.
 //
-// HOW TO GET YOUR API KEY:
-// 1. Go to https://www.themoviedb.org/
-// 2. Sign up for a free account
-// 3. Go to Settings → API
-// 4. Request an API key (instant approval)
-// 5. Copy your API key and paste it below
-//
-// REPLACE 'YOUR_TMDB_API_KEY' with your actual API key
+// HOW TO SET UP YOUR API KEYS:
+// 1. Copy .env.example to .env
+// 2. Get a FREE TMDB API key from https://www.themoviedb.org/settings/api
+// 3. Get a RapidAPI key from https://rapidapi.com/gox-ai-gox-ai-default/api/ott-details
+// 4. Add your keys to the .env file
+// 5. NEVER commit the .env file to version control!
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConstants {
   // Base URL - You can replace this with your actual API
   static const String baseUrl = 'https://api.themoviedb.org/3';
 
-  // ⚠️ IMPORTANT: Replace YOUR_TMDB_API_KEY with your actual API key
-  // Get it from: https://www.themoviedb.org/settings/api
-  static const String apiKey = '5119b1bb88f8b1133a139578c96a70f4';
+  // ⚠️ IMPORTANT: API keys are now loaded from .env file
+  // Make sure to set up your .env file before running the app
+  static String get apiKey => dotenv.env['TMDB_API_KEY'] ?? '';
 
   // RapidAPI Configuration
-  static const String rapidApiKey =
-      'a62b366bf9msh4a0cffa8591d6b5p1d13cajsn95e07bc2814a';
-  static const String rapidApiHost = 'ott-details.p.rapidapi.com';
+  static String get rapidApiKey => dotenv.env['RAPID_API_KEY'] ?? '';
+  static String get rapidApiHost =>
+      dotenv.env['RAPID_API_HOST'] ?? 'ott-details.p.rapidapi.com';
   static const String rapidApiBaseUrl = 'https://ott-details.p.rapidapi.com';
 
   // API Endpoints

@@ -91,19 +91,36 @@ cd /Users/dineshkokare/Documents/ott_streaming_app
 flutter pub get
 ```
 
-### 3. Configure TMDB API
+### 3. Configure API Keys (IMPORTANT! 🔒)
 
-1. Go to [The Movie Database (TMDB)](https://www.themoviedb.org/)
-2. Create a free account
-3. Navigate to Settings → API
-4. Request an API key
-5. Copy your API key
-6. Open `lib/constants/api_constants.dart`
-7. Replace `YOUR_TMDB_API_KEY` with your actual API key:
+**Your API keys are now secured using environment variables!**
 
-```dart
-static const String apiKey = 'your_actual_api_key_here';
-```
+1. **Copy the environment template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Get your TMDB API Key:**
+   - Go to [The Movie Database (TMDB)](https://www.themoviedb.org/)
+   - Create a free account
+   - Navigate to Settings → API
+   - Request an API key (instant approval)
+
+3. **Get your RapidAPI Key:**
+   - Go to [RapidAPI OTT Details](https://rapidapi.com/gox-ai-gox-ai-default/api/ott-details)
+   - Sign up or log in
+   - Subscribe to the API (free tier available)
+
+4. **Update your `.env` file** with your actual API keys:
+   ```env
+   TMDB_API_KEY=your_actual_tmdb_api_key_here
+   RAPID_API_KEY=your_actual_rapidapi_key_here
+   RAPID_API_HOST=ott-details.p.rapidapi.com
+   ```
+
+> ⚠️ **IMPORTANT**: Never commit the `.env` file to version control! It's already in `.gitignore`.
+> 
+> 📖 For detailed security information, see [API_KEY_SECURITY.md](API_KEY_SECURITY.md)
 
 ### 4. Configure Firebase
 
@@ -279,6 +296,7 @@ For issues or questions:
 
 This project includes comprehensive documentation:
 
+- **[API_KEY_SECURITY.md](API_KEY_SECURITY.md)** - 🔒 **IMPORTANT**: API key security guide
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide for faster onboarding
 - **[CHECKLIST.md](CHECKLIST.md)** - Configuration checklist
 - **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Detailed project overview
