@@ -111,24 +111,27 @@ class ApiService {
     if (query.isEmpty) return [];
 
     try {
-      final response = await http.get(
-        Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.search}?api_key=${ApiConstants.apiKey}&query=$query',
-        ),
-      );
+      final encodedQuery = Uri.encodeComponent(query);
+      final url =
+          '${ApiConstants.baseUrl}${ApiConstants.search}?api_key=${ApiConstants.apiKey}&query=$encodedQuery';
+      debugPrint('Searching URL: $url');
+
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final results = data['results'] as List;
-        return results
+        final filteredResults = results
             .where(
               (json) =>
                   json['media_type'] == 'movie' || json['media_type'] == 'tv',
             )
             .map((json) => Content.fromJson(json))
             .toList();
+        debugPrint('Found ${filteredResults.length} results for query: $query');
+        return filteredResults;
       } else {
-        throw Exception('Failed to search content');
+        throw Exception('Failed to search content: ${response.statusCode}');
       }
     } catch (e) {
       debugPrint('Error searching content: $e');
@@ -203,6 +206,44 @@ class ApiService {
     } catch (e) {
       debugPrint('Error fetching content videos: $e');
       return [];
+    }
+  }
+
+  // Get Content By ID (Try Movie then TV)
+  Future<Content?> getContentById(int id) async {
+    try {
+      // Try fetching as movie first
+      try {
+        final movieResponse = await http.get(
+          Uri.parse(
+            '${ApiConstants.baseUrl}${ApiConstants.movieDetails}/$id?api_key=${ApiConstants.apiKey}',
+          ),
+        );
+
+        if (movieResponse.statusCode == 200) {
+          final data = json.decode(movieResponse.body);
+          data['media_type'] = 'movie';
+          return Content.fromJson(data);
+        }
+      } catch (_) {}
+
+      // If not movie, try TV show
+      final tvResponse = await http.get(
+        Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.tvDetails}/$id?api_key=${ApiConstants.apiKey}',
+        ),
+      );
+
+      if (tvResponse.statusCode == 200) {
+        final data = json.decode(tvResponse.body);
+        data['media_type'] = 'tv';
+        return Content.fromJson(data);
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint('Error fetching content by ID $id: $e');
+      return null;
     }
   }
 }

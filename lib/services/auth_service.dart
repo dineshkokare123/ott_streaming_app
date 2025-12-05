@@ -1,11 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../models/user.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth get _auth => FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
   // Get current user
   User? get currentUser => _auth.currentUser;
@@ -43,10 +46,8 @@ class AuthService {
       );
 
       if (credential.user != null) {
-        // Update display name
         await credential.user!.updateDisplayName(displayName);
 
-        // Create user document in Firestore
         final appUser = AppUser(
           id: credential.user!.uid,
           email: email,
@@ -70,12 +71,131 @@ class AuthService {
     }
   }
 
-  // Sign out
-  Future<void> signOut() async {
-    await _auth.signOut();
+  // Sign in with Google
+  Future<AppUser?> signInWithGoogle() async {
+    try {
+      // FIX 2: Correct method name is signIn() (ensure correct casing).
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        return null;
+      }
+
+      // FIX 3: Added 'await' to googleUser.authentication since it returns a Future.
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        // FIX 4: Use 'accessToken' as it is the standard getter.
+        // If this still fails, your version might use 'idToken' only.
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        final existingUser = await getUserData(userCredential.user!.uid);
+
+        if (existingUser != null) {
+          return existingUser;
+        }
+
+        final appUser = AppUser(
+          id: userCredential.user!.uid,
+          email: userCredential.user!.email ?? '',
+          displayName: userCredential.user!.displayName ?? 'User',
+          photoUrl: userCredential.user!.photoURL,
+          watchlist: [],
+          favorites: [],
+          createdAt: DateTime.now(),
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set(appUser.toJson());
+
+        return appUser;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Google Sign-In Error: $e');
+      throw 'Failed to sign in with Google. Please try again.';
+    }
   }
 
-  // Get user data from Firestore
+  // Sign in with Facebook
+  Future<AppUser?> signInWithFacebook() async {
+    try {
+      final LoginResult loginResult = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+      );
+
+      if (loginResult.status == LoginStatus.cancelled) {
+        return null;
+      }
+
+      if (loginResult.status == LoginStatus.failed) {
+        throw 'Facebook sign-in failed: ${loginResult.message}';
+      }
+
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+
+      final userCredential = await _auth.signInWithCredential(
+        facebookAuthCredential,
+      );
+
+      if (userCredential.user != null) {
+        final userData = await FacebookAuth.instance.getUserData(
+          fields: "name,email,picture.width(200)",
+        );
+
+        final existingUser = await getUserData(userCredential.user!.uid);
+
+        if (existingUser != null) {
+          return existingUser;
+        }
+
+        final appUser = AppUser(
+          id: userCredential.user!.uid,
+          email: userData['email'] ?? userCredential.user!.email ?? '',
+          displayName:
+              userData['name'] ?? userCredential.user!.displayName ?? 'User',
+          photoUrl:
+              userData['picture']?['data']?['url'] ??
+              userCredential.user!.photoURL,
+          watchlist: [],
+          favorites: [],
+          createdAt: DateTime.now(),
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set(appUser.toJson());
+
+        return appUser;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Facebook Sign-In Error: $e');
+      throw 'Failed to sign in with Facebook. Please try again.';
+    }
+  }
+
+  // Sign out
+  Future<void> signOut() async {
+    try {
+      await _googleSignIn.signOut();
+      await FacebookAuth.instance.logOut();
+      await _auth.signOut();
+    } catch (e) {
+      debugPrint('Sign out error: $e');
+    }
+  }
+
   Future<AppUser?> getUserData(String uid) async {
     try {
       final doc = await _firestore.collection('users').doc(uid).get();
@@ -89,7 +209,6 @@ class AuthService {
     }
   }
 
-  // Update user profile
   Future<void> updateUserProfile(AppUser user) async {
     try {
       await _firestore.collection('users').doc(user.id).update(user.toJson());
@@ -99,7 +218,6 @@ class AuthService {
     }
   }
 
-  // Add to watchlist
   Future<void> addToWatchlist(String userId, int contentId) async {
     try {
       await _firestore.collection('users').doc(userId).update({
@@ -111,7 +229,6 @@ class AuthService {
     }
   }
 
-  // Remove from watchlist
   Future<void> removeFromWatchlist(String userId, int contentId) async {
     try {
       await _firestore.collection('users').doc(userId).update({
@@ -123,7 +240,6 @@ class AuthService {
     }
   }
 
-  // Add to favorites
   Future<void> addToFavorites(String userId, int contentId) async {
     try {
       await _firestore.collection('users').doc(userId).update({
@@ -135,7 +251,6 @@ class AuthService {
     }
   }
 
-  // Remove from favorites
   Future<void> removeFromFavorites(String userId, int contentId) async {
     try {
       await _firestore.collection('users').doc(userId).update({
@@ -147,7 +262,15 @@ class AuthService {
     }
   }
 
-  // Handle auth exceptions
+  // Forgot Password implementation
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    }
+  }
+
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':

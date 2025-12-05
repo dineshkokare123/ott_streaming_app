@@ -18,20 +18,28 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
       flags: const YoutubePlayerFlags(
         autoPlay: true,
         mute: false,
         enableCaption: false,
+        forceHD: true,
       ),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -39,28 +47,29 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: YoutubePlayerBuilder(
-          player: YoutubePlayer(
-            controller: _controller,
-            showVideoProgressIndicator: true,
-            progressIndicatorColor: AppColors.primary,
-            progressColors: const ProgressBarColors(
-              playedColor: AppColors.primary,
-              handleColor: AppColors.primary,
-            ),
-            onReady: () {
-              // Player is ready
-            },
+      body: YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: AppColors.primary,
+          progressColors: const ProgressBarColors(
+            playedColor: AppColors.primary,
+            handleColor: AppColors.primary,
           ),
-          builder: (context, player) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Custom Back Button
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: SafeArea(
+          onReady: () {
+            // Player is ready
+          },
+        ),
+        builder: (context, player) {
+          return Stack(
+            children: [
+              Center(child: player),
+              Positioned(
+                top: 10,
+                left: 10,
+                child: SafeArea(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black.withValues(alpha: 0.5),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () {
@@ -69,11 +78,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     ),
                   ),
                 ),
-                Expanded(child: player),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -7,6 +7,7 @@ import '../widgets/animated_bottom_nav.dart';
 import '../widgets/shimmer_loading.dart';
 import 'content_detail_screen.dart';
 import 'search_screen.dart';
+import 'watchlist_screen.dart';
 import 'profile_screen.dart';
 import '../models/content.dart';
 
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> screens = [
       const _HomeTab(),
       const SearchScreen(),
+      const WatchlistScreen(),
       const ProfileScreen(),
     ];
 

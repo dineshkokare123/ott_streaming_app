@@ -18,7 +18,7 @@ class ApiConstants {
 
   // ⚠️ IMPORTANT: Replace YOUR_TMDB_API_KEY with your actual API key
   // Get it from: https://www.themoviedb.org/settings/api
-  static const String apiKey = 'YOUR_TMDB_API_KEY';
+  static const String apiKey = '5119b1bb88f8b1133a139578c96a70f4';
 
   // API Endpoints
   static const String trending = '/trending/all/week';

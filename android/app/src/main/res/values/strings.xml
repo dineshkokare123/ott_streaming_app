@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StreamVibe</string>
+    <!-- TODO: Replace with your actual Facebook App ID -->
+    <string name="facebook_app_id">1606869573633520</string>
+    <!-- TODO: Replace with your actual Facebook Client Token -->
+    <string name="facebook_client_token">31c11d9b66d2f23945962e6f080dc424</string>
+    <!-- TODO: Replace with "fb" + your Facebook App ID -->
+    <string name="fb_login_protocol_scheme">fb1606869573633520</string>
+</resources>

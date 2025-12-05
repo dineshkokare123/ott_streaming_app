@@ -4,6 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'providers/auth_provider.dart';
 import 'providers/content_provider.dart';
+import 'providers/watchlist_provider.dart';
+import 'providers/continue_watching_provider.dart';
+import 'providers/recommendations_provider.dart';
+import 'providers/download_provider.dart';
+import 'providers/reviews_provider.dart';
+import 'providers/profile_provider.dart';
 import 'screens/splash_screen.dart';
 import 'constants/app_colors.dart';
 
@@ -46,6 +52,12 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ContentProvider()),
+        ChangeNotifierProvider(create: (_) => WatchlistProvider()),
+        ChangeNotifierProvider(create: (_) => ContinueWatchingProvider()),
+        ChangeNotifierProvider(create: (_) => RecommendationsProvider()),
+        ChangeNotifierProvider(create: (_) => DownloadProvider()),
+        ChangeNotifierProvider(create: (_) => ReviewsProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
         title: 'StreamVibe',

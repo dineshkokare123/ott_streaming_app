@@ -49,9 +49,14 @@ class AnimatedBottomNav extends StatelessWidget {
                 index: 1,
               ),
               _buildNavItem(
+                icon: Icons.playlist_play_rounded,
+                label: 'My List',
+                index: 2,
+              ),
+              _buildNavItem(
                 icon: Icons.person_rounded,
                 label: 'Profile',
-                index: 2,
+                index: 3,
               ),
             ],
           ),
