@@ -70,6 +70,16 @@ dependencies:
   url_launcher: ^6.3.2
   flutter_dotenv: ^5.1.0
 
+  # Offline Mode & Network
+  connectivity_plus: ^6.0.5
+
+  # Cast Support (requires native platform channels)
+  # See ADVANCED_FEATURES_IMPLEMENTATION.md for setup
+
+  # Social Features
+  share_plus: ^10.0.3
+  flutter_sharing_intent: ^1.1.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -117,7 +117,7 @@ class NotificationsScreen extends StatelessWidget {
                   Icon(
                     Icons.notifications_off_outlined,
                     size: 80,
-                    color: AppColors.textSecondary.withOpacity(0.5),
+                    color: AppColors.textSecondary.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -253,13 +253,13 @@ class _NotificationCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         decoration: BoxDecoration(
           color: notification.isRead
-              ? AppColors.backgroundLight.withOpacity(0.5)
+              ? AppColors.backgroundLight.withValues(alpha: 0.5)
               : AppColors.backgroundLight,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: notification.isRead
                 ? Colors.transparent
-                : AppColors.primary.withOpacity(0.3),
+                : AppColors.primary.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -278,7 +278,7 @@ class _NotificationCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: _getTypeColor().withOpacity(0.2),
+                      color: _getTypeColor().withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(

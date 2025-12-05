@@ -1048,7 +1048,7 @@ class ContentDetailScreen extends StatelessWidget {
                             }
                           },
                         );
-                      }).toList(),
+                      }),
                       Divider(color: Colors.grey[800]),
                     ],
                   );

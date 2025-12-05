@@ -74,4 +74,6 @@ class Content {
     if (releaseDate == null || releaseDate!.isEmpty) return 'N/A';
     return releaseDate!.split('-')[0];
   }
+
+  bool get isMovie => mediaType == 'movie';
 }

@@ -370,27 +370,4 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-
-  void _showComingSoonDialog(BuildContext context, String feature) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.backgroundLight,
-        title: Text(
-          feature,
-          style: const TextStyle(color: AppColors.textPrimary),
-        ),
-        content: const Text(
-          'This feature is coming soon!',
-          style: TextStyle(color: AppColors.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK', style: TextStyle(color: AppColors.primary)),
-          ),
-        ],
-      ),
-    );
-  }
 }
