@@ -56,18 +56,60 @@ https://github.com/user-attachments/assets/8936463c-b7ab-47a3-9519-c86cf99447a9
 
 <div align="center">
 
-### Splash Screen & Authentication
-*Coming soon - Add your app screenshots here*
+### 🔐 Authentication Flow
 
-### Home & Content Browsing
-*Coming soon - Add your app screenshots here*
+<p float="left">
+  <img src="screenshots/01_login_screen.png" width="250" alt="Login Screen" />
+  <img src="screenshots/02_signup_screen.png" width="250" alt="Sign Up Screen" />
+  <img src="screenshots/03_google_signin.png" width="250" alt="Google Sign In" />
+</p>
 
-### Content Details & Video Player
-*Coming soon - Add your app screenshots here*
+*Secure authentication with email/password and Google Sign-In integration*
+
+---
+
+### 🏠 Home Screen & Content
+
+<p float="left">
+  <img src="screenshots/04_home_screen.png" width="250" alt="Home Screen Loading" />
+  <img src="screenshots/05_home_with_content.png" width="250" alt="Home with Content" />
+</p>
+
+*Real-time content from TMDB API - Trending Now, Popular Movies, and Top Rated sections with actual movie posters*
+
+---
+
+### 👤 Profile & User Management
+
+<p float="left">
+  <img src="screenshots/06_profile_screen.png" width="250" alt="Profile Screen" />
+</p>
+
+*User profile with account settings, notifications, privacy controls, My List, Watch History, and Downloads*
+
+---
+
+### 🎬 Movie Details & Reviews
+
+<p float="left">
+  <img src="screenshots/07_movie_detail.png" width="250" alt="Movie Detail - Spirited Away" />
+  <img src="screenshots/08_write_review.png" width="250" alt="Write Review" />
+</p>
+
+*Detailed movie information with Watch, Trailer, My List, Download, and Rate & Review features*
+
+---
+
+### 📺 Video Player
+
+<p float="left">
+  <img src="screenshots/09_video_player.png" width="250" alt="Video Player" />
+  <img src="screenshots/10_trailer_player.png" width="250" alt="Trailer Player" />
+</p>
+
+*Full-screen video player with HD quality playback and trailer preview functionality*
 
 </div>
-
-> **Note**: To add screenshots, create a `screenshots` folder in your repository and update the paths above.
 
 ## 📋 Prerequisites
 
