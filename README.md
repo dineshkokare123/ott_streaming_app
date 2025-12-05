@@ -345,5 +345,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Made with passion for creating beautiful mobile experiences
 
-</div>
-# ott_streaming_app
+
