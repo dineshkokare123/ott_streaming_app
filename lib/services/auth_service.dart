@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../models/user.dart';
 
 class AuthService {
@@ -127,69 +126,14 @@ class AuthService {
 
   // Sign in with Facebook
   Future<AppUser?> signInWithFacebook() async {
-    try {
-      final LoginResult loginResult = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile'],
-      );
-
-      if (loginResult.status == LoginStatus.cancelled) {
-        return null;
-      }
-
-      if (loginResult.status == LoginStatus.failed) {
-        throw 'Facebook sign-in failed: ${loginResult.message}';
-      }
-
-      final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
-
-      final userCredential = await _auth.signInWithCredential(
-        facebookAuthCredential,
-      );
-
-      if (userCredential.user != null) {
-        final userData = await FacebookAuth.instance.getUserData(
-          fields: "name,email,picture.width(200)",
-        );
-
-        final existingUser = await getUserData(userCredential.user!.uid);
-
-        if (existingUser != null) {
-          return existingUser;
-        }
-
-        final appUser = AppUser(
-          id: userCredential.user!.uid,
-          email: userData['email'] ?? userCredential.user!.email ?? '',
-          displayName:
-              userData['name'] ?? userCredential.user!.displayName ?? 'User',
-          photoUrl:
-              userData['picture']?['data']?['url'] ??
-              userCredential.user!.photoURL,
-          watchlist: [],
-          favorites: [],
-          createdAt: DateTime.now(),
-        );
-
-        await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set(appUser.toJson());
-
-        return appUser;
-      }
-      return null;
-    } catch (e) {
-      debugPrint('Facebook Sign-In Error: $e');
-      throw 'Failed to sign in with Facebook. Please try again.';
-    }
+    throw 'Facebook sign-in is currently disabled.';
   }
 
   // Sign out
   Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
-      await FacebookAuth.instance.logOut();
+      // Facebook Auth removed
       await _auth.signOut();
     } catch (e) {
       debugPrint('Sign out error: $e');

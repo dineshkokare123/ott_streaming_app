@@ -1208,14 +1208,6 @@ PODS:
     - Firebase/Firestore (= 12.4.0)
     - firebase_core
     - Flutter
-  - FBAEMKit (18.0.2):
-    - FBSDKCoreKit_Basics (= 18.0.2)
-  - FBSDKCoreKit (18.0.2):
-    - FBAEMKit (= 18.0.2)
-    - FBSDKCoreKit_Basics (= 18.0.2)
-  - FBSDKCoreKit_Basics (18.0.2)
-  - FBSDKLoginKit (18.0.2):
-    - FBSDKCoreKit (= 18.0.2)
   - Firebase/Auth (12.4.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 12.4.0)
@@ -1272,9 +1264,6 @@ PODS:
     - nanopb (~> 3.30910.0)
   - FirebaseSharedSwift (12.4.0)
   - Flutter (1.0.0)
-  - flutter_facebook_auth (7.1.2):
-    - FBSDKLoginKit (~> 18.0.0)
-    - Flutter
   - flutter_inappwebview_ios (0.0.1):
     - Flutter
     - flutter_inappwebview_ios/Core (= 0.0.1)
@@ -1282,8 +1271,6 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
-  - flutter_secure_storage (6.0.0):
-    - Flutter
   - google_sign_in_ios (0.0.1):
     - AppAuth (>= 1.7.4)
     - Flutter
@@ -1439,6 +1426,8 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - url_launcher_ios (0.0.1):
+    - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -1450,14 +1439,13 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
-  - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
-  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
@@ -1467,10 +1455,6 @@ SPEC REPOS:
     - AppAuth
     - AppCheckCore
     - BoringSSL-GRPC
-    - FBAEMKit
-    - FBSDKCoreKit
-    - FBSDKCoreKit_Basics
-    - FBSDKLoginKit
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -1502,12 +1486,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
-  flutter_facebook_auth:
-    :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
-  flutter_secure_storage:
-    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/darwin"
   package_info_plus:
@@ -1518,6 +1498,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   wakelock_plus:
@@ -1529,10 +1511,6 @@ SPEC CHECKSUMS:
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
   cloud_firestore: 7a6d8a533ec7418a7fe46b3a5dabf55661a5b298
-  FBAEMKit: 56a4f5a9607957b547b6458b17a98c5bb2736367
-  FBSDKCoreKit: 54f1240567e16862ab71c53c33dc347db5c524c5
-  FBSDKCoreKit_Basics: eb530cd6a79030dbb11df460aafb2767bcad9028
-  FBSDKLoginKit: 6a70798793e499335a98fab1a758d7da34af196e
   Firebase: f07b15ae5a6ec0f93713e30b923d9970d144af3e
   firebase_auth: 9225db04db5d8e3b46dc8940e04bc6aec6833e27
   firebase_core: f1aafb21c14f497e5498f7ffc4dc63cbb52b2594
@@ -1546,9 +1524,7 @@ SPEC CHECKSUMS:
   FirebaseFirestoreInternal: 6577a27cd5dc3722b900042527f86d4ea1626134
   FirebaseSharedSwift: 93426a1de92f19e1199fac5295a4f8df16458daa
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_facebook_auth: d97dc09216aebd99d7ac52360186a630f67bdf18
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
-  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   google_sign_in_ios: b48bb9af78576358a168361173155596c845f0b9
   GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
@@ -1565,6 +1541,7 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
 

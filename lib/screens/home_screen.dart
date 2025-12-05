@@ -257,6 +257,46 @@ class _HomeTab extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 24),
+
+                    // Action Movies
+                    ContentRow(
+                      title: 'Action Movies',
+                      content: contentProvider.actionMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Sci-Fi Movies
+                    ContentRow(
+                      title: 'Sci-Fi Movies',
+                      content: contentProvider.scifiMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Comedy Movies
+                    ContentRow(
+                      title: 'Comedy Movies',
+                      content: contentProvider.comedyMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Horror Movies
+                    ContentRow(
+                      title: 'Horror Movies',
+                      content: contentProvider.horrorMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),

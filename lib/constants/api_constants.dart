@@ -20,6 +20,12 @@ class ApiConstants {
   // Get it from: https://www.themoviedb.org/settings/api
   static const String apiKey = '5119b1bb88f8b1133a139578c96a70f4';
 
+  // RapidAPI Configuration
+  static const String rapidApiKey =
+      'a62b366bf9msh4a0cffa8591d6b5p1d13cajsn95e07bc2814a';
+  static const String rapidApiHost = 'ott-details.p.rapidapi.com';
+  static const String rapidApiBaseUrl = 'https://ott-details.p.rapidapi.com';
+
   // API Endpoints
   static const String trending = '/trending/all/week';
   static const String popularMovies = '/movie/popular';
@@ -30,6 +36,17 @@ class ApiConstants {
   static const String search = '/search/multi';
   static const String movieDetails = '/movie';
   static const String tvDetails = '/tv';
+  static const String discoverMovie = '/discover/movie';
+
+  // Genre IDs
+  static const int genreAction = 28;
+  static const int genreComedy = 35;
+  static const int genreHorror = 27;
+  static const int genreSciFi = 878;
+  static const int genreRomance = 10749;
+  static const int genreAnimation = 16;
+  static const int genreCrime = 80;
+  static const int genreDrama = 18;
 
   // Image Base URLs
   static const String imageBaseUrl = 'https://image.tmdb.org/t/p';

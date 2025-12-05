@@ -14,6 +14,7 @@ import '../widgets/content_card.dart';
 import 'video_player_screen.dart';
 import 'full_video_player_screen.dart';
 import 'reviews_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContentDetailScreen extends StatelessWidget {
   final Content content;
@@ -186,16 +187,7 @@ class ContentDetailScreen extends StatelessWidget {
                             width: double.infinity,
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FullVideoPlayerScreen(
-                                      videoUrl:
-                                          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                                      title: content.title,
-                                    ),
-                                  ),
-                                );
+                                _showWatchOptions(context);
                               },
                               icon: const Icon(
                                 Icons.play_arrow_rounded,
@@ -849,6 +841,229 @@ class ContentDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showWatchOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.backgroundLight,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Watch Options',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(
+                Icons.play_circle_filled,
+                color: AppColors.primary,
+                size: 30,
+              ),
+              title: const Text(
+                'Play Demo Video',
+                style: TextStyle(color: Colors.white),
+              ),
+              subtitle: const Text(
+                'Simulated full-length playback',
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _playSampleVideo(context);
+              },
+            ),
+            Divider(color: Colors.grey[800]),
+            ListTile(
+              leading: const Icon(Icons.search, color: Colors.blue, size: 30),
+              title: const Text(
+                'Find Streaming Sources',
+                style: TextStyle(color: Colors.white),
+              ),
+              subtitle: const Text(
+                'Search Netflix, Amazon via Gox-AI API',
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _searchStreamingLinks(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _playSampleVideo(BuildContext context) {
+    final sampleVideos = [
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoy.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4',
+    ];
+
+    final videoUrl = sampleVideos[content.id % sampleVideos.length];
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            FullVideoPlayerScreen(videoUrl: videoUrl, title: content.title),
+      ),
+    );
+  }
+
+  Future<void> _searchStreamingLinks(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+    );
+
+    try {
+      final apiService = ApiService();
+      final imdbId = await apiService.getImdbId(content.id, content.mediaType);
+
+      if (imdbId == null) {
+        if (context.mounted) Navigator.pop(context);
+        if (context.mounted) _showError(context, 'Could not find IMDb ID');
+        return;
+      }
+
+      final details = await apiService.getOttDetails(imdbId);
+      if (context.mounted) Navigator.pop(context);
+
+      if (details != null && context.mounted) {
+        _showStreamingDialog(context, details);
+      } else {
+        if (context.mounted) _showError(context, 'No streaming details found');
+      }
+    } catch (e) {
+      if (context.mounted) Navigator.pop(context);
+      if (context.mounted) _showError(context, 'Error: $e');
+    }
+  }
+
+  void _showStreamingDialog(
+    BuildContext context,
+    Map<String, dynamic> details,
+  ) {
+    if (details['streamingAvailability'] == null ||
+        details['streamingAvailability']['country'] == null) {
+      _showError(context, 'No streaming links found for this title.');
+      return;
+    }
+
+    final countries =
+        details['streamingAvailability']['country'] as Map<String, dynamic>;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: const BoxDecoration(
+          color: AppColors.backgroundLight,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              'Streaming Links',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: countries.keys.length,
+                itemBuilder: (context, index) {
+                  final countryCode = countries.keys.elementAt(index);
+                  final platforms = countries[countryCode] as List;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          'Country: $countryCode',
+                          style: const TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      ...platforms.map<Widget>((p) {
+                        return ListTile(
+                          leading: const Icon(Icons.tv, color: Colors.white),
+                          title: Text(
+                            p['platform'].toString().toUpperCase(),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          trailing: const Icon(
+                            Icons.open_in_new,
+                            color: Colors.grey,
+                          ),
+                          onTap: () async {
+                            final url = Uri.parse(p['url']);
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(
+                                url,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            } else {
+                              if (context.mounted) {
+                                _showError(context, 'Could not launch URL');
+                              }
+                            }
+                          },
+                        );
+                      }).toList(),
+                      Divider(color: Colors.grey[800]),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: AppColors.error),
     );
   }
 }

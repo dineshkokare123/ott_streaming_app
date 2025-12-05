@@ -27,7 +27,7 @@ class ApiService {
       }
     } catch (e) {
       debugPrint('Error fetching trending content: $e');
-      return [];
+      return _getMockContent('movie');
     }
   }
 
@@ -52,7 +52,7 @@ class ApiService {
       }
     } catch (e) {
       debugPrint('Error fetching popular movies: $e');
-      return [];
+      return _getMockContent('movie');
     }
   }
 
@@ -77,7 +77,7 @@ class ApiService {
       }
     } catch (e) {
       debugPrint('Error fetching top rated movies: $e');
-      return [];
+      return _getMockContent('movie');
     }
   }
 
@@ -102,7 +102,32 @@ class ApiService {
       }
     } catch (e) {
       debugPrint('Error fetching popular TV shows: $e');
-      return [];
+      return _getMockContent('tv');
+    }
+  }
+
+  // Get Movies by Genre
+  Future<List<Content>> getMoviesByGenre(int genreId) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.discoverMovie}?api_key=${ApiConstants.apiKey}&with_genres=$genreId',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) {
+          json['media_type'] = 'movie';
+          return Content.fromJson(json);
+        }).toList();
+      } else {
+        throw Exception('Failed to load movies for genre $genreId');
+      }
+    } catch (e) {
+      debugPrint('Error fetching movies for genre $genreId: $e');
+      return _getMockContent('movie');
     }
   }
 
@@ -245,5 +270,71 @@ class ApiService {
       debugPrint('Error fetching content by ID $id: $e');
       return null;
     }
+  }
+
+  // Get IMDb ID
+  Future<String?> getImdbId(int id, String type) async {
+    try {
+      final endpoint = type == 'movie'
+          ? ApiConstants.movieDetails
+          : ApiConstants.tvDetails;
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConstants.baseUrl}$endpoint/$id/external_ids?api_key=${ApiConstants.apiKey}',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['imdb_id'] as String?;
+      }
+    } catch (e) {
+      debugPrint('Error getting IMDb ID: $e');
+    }
+    return null;
+  }
+
+  // Get OTT Details
+  Future<Map<String, dynamic>?> getOttDetails(String imdbId) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '${ApiConstants.rapidApiBaseUrl}/gettitleDetails?imdbid=$imdbId',
+        ),
+        headers: {
+          'X-RapidAPI-Key': ApiConstants.rapidApiKey,
+          'X-RapidAPI-Host': ApiConstants.rapidApiHost,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body) as Map<String, dynamic>;
+      } else {
+        debugPrint('RapidAPI Error: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error getting OTT details: $e');
+    }
+    return null;
+  }
+
+  List<Content> _getMockContent(String mediaType) {
+    return List.generate(10, (index) {
+      return Content(
+        id: index + 1000,
+        title: '${mediaType == "movie" ? "Movie" : "TV Show"} ${index + 1}',
+        overview:
+            'This is a sample description for ${mediaType == "movie" ? "Movie" : "TV Show"} ${index + 1}. The real content could not be loaded due to network issues.',
+        posterPath: null,
+        backdropPath: null,
+        voteAverage: 7.5 + (index % 3),
+        voteCount: 100 + index * 10,
+        releaseDate: '2024-01-0${index + 1}',
+        mediaType: mediaType,
+        genreIds: const [28, 12],
+        popularity: 100.0 + index,
+        originalLanguage: 'en',
+      );
+    });
   }
 }
