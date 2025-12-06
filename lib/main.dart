@@ -26,6 +26,7 @@ import 'services/creator_studio_service.dart';
 import 'services/smart_download_service.dart';
 import 'services/social_service.dart';
 import 'services/appsflyer_service.dart';
+import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
 import 'constants/app_colors.dart';
 
@@ -43,6 +44,8 @@ void main() async {
   // Initialize Firebase (Note: You'll need to add Firebase configuration)
   try {
     await Firebase.initializeApp();
+    // Initialize Notifications
+    await NotificationService().initialize();
   } catch (e) {
     debugPrint('Firebase initialization error: $e');
     // Continue without Firebase for now
@@ -138,12 +141,13 @@ class MyApp extends StatelessWidget {
               SmartDownloadService(downloadProvider),
         ),
       ],
-      child: Consumer<ThemeService>(
-        builder: (context, themeService, child) {
+      child: Consumer2<ThemeService, LocalizationService>(
+        builder: (context, themeService, localizationService, child) {
           return MaterialApp(
             title: 'StreamVibe',
             debugShowCheckedModeBanner: false,
             theme: themeService.getTheme(),
+            locale: localizationService.currentLocale,
             home: Consumer<AuthProvider>(
               builder: (context, authProvider, _) {
                 return SplashScreen(

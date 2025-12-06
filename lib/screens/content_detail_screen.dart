@@ -182,6 +182,10 @@ class ContentDetailScreen extends StatelessWidget {
                         content.id,
                       );
 
+                      debugPrint(
+                        '🎨 Consumer2 REBUILDING - contentId: ${content.id}, isInWatchlist: $isInWatchlist, isInFavorites: $isInFavorites',
+                      );
+
                       return Column(
                         children: [
                           // Watch Movie Button
@@ -772,16 +776,19 @@ class ContentDetailScreen extends StatelessWidget {
                   // Additional Info
                   if (content.popularity != null)
                     _buildInfoRow(
-                      'Popularity',
+                      'label_popularity'.tr(localization),
                       content.popularity!.toStringAsFixed(1),
                     ),
 
                   if (content.voteCount != null)
-                    _buildInfoRow('Vote Count', content.voteCount.toString()),
+                    _buildInfoRow(
+                      'label_vote_count'.tr(localization),
+                      content.voteCount.toString(),
+                    ),
 
                   if (content.originalLanguage != null)
                     _buildInfoRow(
-                      'Language',
+                      'label_language'.tr(localization),
                       content.originalLanguage!.toUpperCase(),
                     ),
 

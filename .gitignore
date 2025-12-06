@@ -46,3 +46,5 @@ app.*.map.json
 
 # Environment variables (contains sensitive API keys)
 .env
+service_account.json
+scripts/service_account.json

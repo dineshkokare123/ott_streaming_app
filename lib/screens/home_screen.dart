@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      // backgroundColor: AppColors.background, // Removed to use Theme background
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         child: screens[_selectedIndex],
@@ -82,7 +82,7 @@ class _HomeTab extends StatelessWidget {
               // App Bar
               SliverAppBar(
                 floating: true,
-                backgroundColor: AppColors.background,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 0,
                 title: Row(
                   children: [
@@ -102,7 +102,7 @@ class _HomeTab extends StatelessWidget {
                     const Text(
                       'StreamVibe',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        // color: AppColors.textPrimary, // Handled by Theme
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -142,8 +142,8 @@ class _HomeTab extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   'Something went wrong',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -183,7 +183,7 @@ class _HomeTab extends StatelessWidget {
               // App Bar
               SliverAppBar(
                 floating: true,
-                backgroundColor: AppColors.background,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 0,
                 title: Row(
                   children: [
@@ -203,7 +203,7 @@ class _HomeTab extends StatelessWidget {
                     const Text(
                       'StreamVibe',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        // color: AppColors.textPrimary, // Handled by Theme
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -261,9 +261,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Action Movies
                     ContentRow(
-                      title: 'Action Movies'.tr(
-                        localization,
-                      ), // Fallback: just use string if not in dict
+                      title: 'genre_action'.tr(localization),
                       content: contentProvider.actionMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -273,7 +271,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Sci-Fi Movies
                     ContentRow(
-                      title: 'Sci-Fi Movies'.tr(localization),
+                      title: 'genre_scifi'.tr(localization),
                       content: contentProvider.scifiMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -283,7 +281,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Comedy Movies
                     ContentRow(
-                      title: 'Comedy Movies'.tr(localization),
+                      title: 'genre_comedy'.tr(localization),
                       content: contentProvider.comedyMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -293,7 +291,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Horror Movies
                     ContentRow(
-                      title: 'Horror Movies'.tr(localization),
+                      title: 'genre_horror'.tr(localization),
                       content: contentProvider.horrorMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),

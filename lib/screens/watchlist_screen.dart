@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
 import '../providers/watchlist_provider.dart';
+import '../providers/profile_provider.dart';
 import '../constants/app_colors.dart';
 import '../widgets/content_card.dart';
 import 'content_detail_screen.dart';
@@ -22,15 +22,30 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload watchlist whenever dependencies change (e.g., profile updates)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadWatchlist();
+      }
+    });
+  }
+
   void _loadWatchlist() {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final profileProvider = Provider.of<ProfileProvider>(
+      context,
+      listen: false,
+    );
     final watchlistProvider = Provider.of<WatchlistProvider>(
       context,
       listen: false,
     );
 
-    if (authProvider.currentUser != null) {
-      watchlistProvider.loadWatchlist(authProvider.currentUser!.watchlist);
+    final currentProfile = profileProvider.currentProfile;
+    if (currentProfile != null) {
+      watchlistProvider.loadWatchlist(currentProfile.watchlist);
     }
   }
 
@@ -46,12 +61,12 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
       ),
-      body: Consumer2<AuthProvider, WatchlistProvider>(
-        builder: (context, authProvider, watchlistProvider, _) {
-          if (authProvider.currentUser == null) {
+      body: Consumer2<ProfileProvider, WatchlistProvider>(
+        builder: (context, profileProvider, watchlistProvider, _) {
+          if (profileProvider.currentProfile == null) {
             return const Center(
               child: Text(
-                'Please sign in to view your watchlist',
+                'Please select a profile to view your watchlist',
                 style: TextStyle(color: AppColors.textSecondary),
               ),
             );

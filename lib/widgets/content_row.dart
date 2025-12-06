@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/content.dart';
-import '../constants/app_colors.dart';
+
 import 'content_card.dart';
 
 class ContentRow extends StatelessWidget {
@@ -28,10 +28,9 @@ class ContentRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Text(
             title,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 20,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
           ),
         ),

@@ -130,6 +130,7 @@ class ReviewsProvider extends ChangeNotifier {
     String? reviewText,
   }) async {
     try {
+      debugPrint('🔵 Submitting review to Firestore...');
       final reviewId = DateTime.now().millisecondsSinceEpoch.toString();
 
       final review = Review(
@@ -143,26 +144,44 @@ class ReviewsProvider extends ChangeNotifier {
         createdAt: DateTime.now(),
       );
 
-      // Save to Firestore
-      await _firestore
-          .collection('content_reviews')
-          .doc(contentId)
-          .collection('reviews')
-          .doc(reviewId)
-          .set(review.toJson());
+      // Save to Firestore with timeout
+      try {
+        await _firestore
+            .collection('content_reviews')
+            .doc(contentId)
+            .collection('reviews')
+            .doc(reviewId)
+            .set(review.toJson())
+            .timeout(const Duration(seconds: 10));
+
+        debugPrint('✅ Review saved to Firestore');
+      } catch (firestoreError) {
+        debugPrint(
+          '❌ Firestore error (continuing with local update): $firestoreError',
+        );
+        // Continue to update local cache even if Firestore fails
+      }
 
       // Update local cache
       if (_reviewsCache[contentId] == null) {
         _reviewsCache[contentId] = [];
       }
       _reviewsCache[contentId]!.insert(0, review);
+      debugPrint('✅ Review added to local cache');
 
       // Update rating summary
-      await _updateRatingSummary(contentId);
+      try {
+        await _updateRatingSummary(contentId);
+        debugPrint('✅ Rating summary updated');
+      } catch (e) {
+        debugPrint('⚠️ Failed to update rating summary: $e');
+      }
 
+      debugPrint('📢 Calling notifyListeners()');
       notifyListeners();
+      debugPrint('✅ Review submitted successfully');
     } catch (e) {
-      debugPrint('Error submitting review: $e');
+      debugPrint('❌ Error submitting review: $e');
       rethrow;
     }
   }
@@ -283,7 +302,15 @@ class ReviewsProvider extends ChangeNotifier {
 
       if (reviews.isEmpty) {
         // Delete rating summary if no reviews
-        await _firestore.collection('content_ratings').doc(contentId).delete();
+        try {
+          await _firestore
+              .collection('content_ratings')
+              .doc(contentId)
+              .delete()
+              .timeout(const Duration(seconds: 5));
+        } catch (e) {
+          debugPrint('⚠️ Failed to delete rating summary from Firestore: $e');
+        }
         _ratingsCache.remove(contentId);
         return;
       }
@@ -303,14 +330,23 @@ class ReviewsProvider extends ChangeNotifier {
         ratingDistribution: distribution,
       );
 
-      await _firestore
-          .collection('content_ratings')
-          .doc(contentId)
-          .set(rating.toJson());
-
+      // Update local cache first
       _ratingsCache[contentId] = rating;
+
+      // Try to save to Firestore with timeout
+      try {
+        await _firestore
+            .collection('content_ratings')
+            .doc(contentId)
+            .set(rating.toJson())
+            .timeout(const Duration(seconds: 5));
+        debugPrint('✅ Rating summary saved to Firestore');
+      } catch (e) {
+        debugPrint('⚠️ Failed to save rating summary to Firestore: $e');
+        // Local cache is already updated, so this is not critical
+      }
     } catch (e) {
-      debugPrint('Error updating rating summary: $e');
+      debugPrint('❌ Error updating rating summary: $e');
     }
   }
 

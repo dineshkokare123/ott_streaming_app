@@ -43,7 +43,7 @@ post_install do |installer|
     target.build_configurations.each do |config|
       # Ensure deployment target is consistent
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
-      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+
       
       # Fix for "unsupported option '-G'" error across all pods (BoringSSL, gRPC, etc.)
       config.build_settings['ARFLAGS'] = '$(inherited)'

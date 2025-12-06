@@ -45,23 +45,23 @@ class ContentProvider extends ChangeNotifier {
     _error = null;
 
     try {
-      // 1. Critical Content (Above the fold) - Wait for this
-      final criticalResults = await Future.wait([
-        _apiService.getTrendingContent(),
-        _apiService.getPopularMovies(),
-      ]);
+      // 1. Critical Content (Above the fold) - Sequential load to avoid network issues
+      final trending = await _apiService.getTrendingContent();
+      _trendingContent = trending;
+      notifyListeners(); // Update UI immediately with trending
 
-      _trendingContent = criticalResults[0];
-      _popularMovies = criticalResults[1];
+      await Future.delayed(const Duration(milliseconds: 200));
 
-      // Show content as soon as critical data is ready
+      final popular = await _apiService.getPopularMovies();
+      _popularMovies = popular;
       _isLoading = false;
       notifyListeners();
 
       // 2. Secondary Content - Load in parallel but don't block UI
       // We start these requests and update state as they finish group by group
 
-      // Group A: Top Rated & TV Shows
+      // Group A: Top Rated & TV Shows - Wait a bit before starting
+      await Future.delayed(const Duration(milliseconds: 200));
       Future.wait([
         _apiService.getTopRatedMovies(),
         _apiService.getPopularTVShows(),
@@ -71,26 +71,37 @@ class ContentProvider extends ChangeNotifier {
         notifyListeners();
       });
 
-      // Group B: Genres (can vary in speed)
-      _apiService.getMoviesByGenre(ApiConstants.genreAction).then((results) {
-        _actionMovies = results;
-        notifyListeners();
-      });
+      // Group B: Genres (staggered to avoid connection resets)
+      // We load them one by one or in small batches
 
-      _apiService.getMoviesByGenre(ApiConstants.genreSciFi).then((results) {
-        _scifiMovies = results;
-        notifyListeners();
-      });
+      await Future.delayed(const Duration(milliseconds: 500));
+      _apiService
+          .getMoviesByGenre(ApiConstants.genreAction)
+          .then((results) async {
+            _actionMovies = results;
+            notifyListeners();
 
-      _apiService.getMoviesByGenre(ApiConstants.genreComedy).then((results) {
-        _comedyMovies = results;
-        notifyListeners();
-      });
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreSciFi);
+          })
+          .then((results) async {
+            _scifiMovies = results;
+            notifyListeners();
 
-      _apiService.getMoviesByGenre(ApiConstants.genreHorror).then((results) {
-        _horrorMovies = results;
-        notifyListeners();
-      });
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreComedy);
+          })
+          .then((results) async {
+            _comedyMovies = results;
+            notifyListeners();
+
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreHorror);
+          })
+          .then((results) {
+            _horrorMovies = results;
+            notifyListeners();
+          });
     } catch (e) {
       _error = 'Failed to load content: $e';
       debugPrint(_error);

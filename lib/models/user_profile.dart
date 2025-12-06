@@ -89,18 +89,18 @@ class ProfileAvatar {
   });
 
   static const List<ProfileAvatar> avatars = [
-    ProfileAvatar(id: 'avatar_1', url: '🎭', name: 'Theater'),
+    ProfileAvatar(id: 'avatar_1', url: '🦸', name: 'Superhero'),
     ProfileAvatar(id: 'avatar_2', url: '🎬', name: 'Clapper'),
     ProfileAvatar(id: 'avatar_3', url: '🎪', name: 'Circus'),
     ProfileAvatar(id: 'avatar_4', url: '🎨', name: 'Art'),
     ProfileAvatar(id: 'avatar_5', url: '🎮', name: 'Gaming'),
-    ProfileAvatar(id: 'avatar_6', url: '🎸', name: 'Music'),
+    ProfileAvatar(id: 'avatar_6', url: '🎸', name: 'Guitar'),
     ProfileAvatar(id: 'avatar_7', url: '🎯', name: 'Target'),
     ProfileAvatar(id: 'avatar_8', url: '🎲', name: 'Dice'),
     ProfileAvatar(id: 'avatar_9', url: '🚀', name: 'Rocket'),
-    ProfileAvatar(id: 'avatar_10', url: '⚽', name: 'Soccer'),
-    ProfileAvatar(id: 'avatar_11', url: '🏀', name: 'Basketball'),
-    ProfileAvatar(id: 'avatar_12', url: '🎾', name: 'Tennis'),
+    ProfileAvatar(id: 'avatar_10', url: '🎭', name: 'Theater'),
+    ProfileAvatar(id: 'avatar_11', url: '🎤', name: 'Microphone'),
+    ProfileAvatar(id: 'avatar_12', url: '🎧', name: 'Headphones'),
     ProfileAvatar(id: 'avatar_13', url: '🦁', name: 'Lion'),
     ProfileAvatar(id: 'avatar_14', url: '🐼', name: 'Panda'),
     ProfileAvatar(id: 'avatar_15', url: '🦊', name: 'Fox'),
@@ -109,6 +109,10 @@ class ProfileAvatar {
     ProfileAvatar(id: 'avatar_18', url: '🐉', name: 'Dragon'),
     ProfileAvatar(id: 'avatar_19', url: '🌟', name: 'Star'),
     ProfileAvatar(id: 'avatar_20', url: '💎', name: 'Diamond'),
+    ProfileAvatar(id: 'avatar_21', url: '🍕', name: 'Pizza'),
+    ProfileAvatar(id: 'avatar_22', url: '🍿', name: 'Popcorn'),
+    ProfileAvatar(id: 'avatar_23', url: '🎹', name: 'Piano'),
+    ProfileAvatar(id: 'avatar_24', url: '⚡', name: 'Lightning'),
   ];
 
   static ProfileAvatar getById(String id) {

@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import '../models/content.dart';
-import '../constants/api_constants.dart';
+import '../services/api_service.dart';
 
 class RecommendationsProvider extends ChangeNotifier {
+  final ApiService _apiService = ApiService();
   final Map<int, List<Content>> _similarContentCache = {};
   bool _isLoading = false;
 
@@ -23,25 +22,13 @@ class RecommendationsProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final endpoint = mediaType == 'movie'
-          ? '/movie/$contentId/similar'
-          : '/tv/$contentId/similar';
-
-      final response = await http.get(
-        Uri.parse(
-          '${ApiConstants.baseUrl}$endpoint?api_key=${ApiConstants.apiKey}',
-        ),
+      // Use ApiService method to get similar content
+      final similarContent = await _apiService.getSimilarContent(
+        contentId,
+        mediaType,
       );
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final results = data['results'] as List;
-
-        _similarContentCache[contentId] = results.take(10).map((json) {
-          json['media_type'] = mediaType;
-          return Content.fromJson(json);
-        }).toList();
-      }
+      _similarContentCache[contentId] = similarContent.take(10).toList();
     } catch (e) {
       debugPrint('Error loading similar content: $e');
       _similarContentCache[contentId] = [];

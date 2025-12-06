@@ -26,7 +26,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationService>(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
           final user = authProvider.currentUser;
@@ -40,16 +40,19 @@ class ProfileScreen extends StatelessWidget {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 200,
+                expandedHeight: 450,
                 pinned: true,
-                backgroundColor: AppColors.background,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0xFF2A2D3E), AppColors.background],
+                        colors: [
+                          Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                          Theme.of(context).scaffoldBackgroundColor,
+                        ],
                       ),
                     ),
                     child: Center(
@@ -111,18 +114,22 @@ class ProfileScreen extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Text(
+                                            Text(
                                               'Current Profile',
                                               style: TextStyle(
-                                                color: AppColors.textSecondary,
+                                                color: Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall?.color,
                                                 fontSize: 12,
                                               ),
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
                                               currentProfile.name,
-                                              style: const TextStyle(
-                                                color: AppColors.textPrimary,
+                                              style: TextStyle(
+                                                color: Theme.of(
+                                                  context,
+                                                ).textTheme.bodyLarge?.color,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -170,16 +177,20 @@ class ProfileScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           Text(
                             user.displayName,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).textTheme.titleLarge?.color,
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             user.email,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.color,
                               fontSize: 14,
                             ),
                           ),
@@ -206,6 +217,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildMenuItem(
+                        context,
                         icon: Icons.person_outline,
                         title: 'edit_profile'.tr(localization),
                         onTap: () {
@@ -219,6 +231,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.notifications_outlined,
                         title: 'notifications'.tr(localization),
                         onTap: () {
@@ -232,6 +245,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.security,
                         title: 'privacy_security'.tr(localization),
                         onTap: () {
@@ -246,6 +260,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.language,
                         title: 'language'.tr(localization),
                         onTap: () {
@@ -260,8 +275,9 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.emoji_events_outlined,
-                        title: 'Achievements',
+                        title: 'achievements'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -273,8 +289,9 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.bar_chart,
-                        title: 'Your Stats',
+                        title: 'your_stats'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -286,8 +303,9 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.rocket_launch,
-                        title: 'New Features 🚀',
+                        title: 'new_features'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -312,6 +330,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildMenuItem(
+                        context,
                         icon: Icons.playlist_play,
                         title: 'my_list'.tr(localization),
                         onTap: () {
@@ -327,6 +346,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.history,
                         title: 'watch_history'.tr(localization),
                         onTap: () {
@@ -340,6 +360,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _buildMenuItem(
+                        context,
                         icon: Icons.download_done,
                         title: 'downloads'.tr(localization),
                         onTap: () {
@@ -397,7 +418,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem({
+  Widget _buildMenuItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -419,8 +441,8 @@ class ProfileScreen extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyLarge?.color,
             fontWeight: FontWeight.w500,
           ),
         ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_profile.dart';
@@ -187,30 +188,69 @@ class ProfileProvider extends ChangeNotifier {
     int contentId,
   ) async {
     try {
+      debugPrint(
+        '🔵 Adding to watchlist: userId=$userId, profileId=$profileId, contentId=$contentId',
+      );
+
       final index = _profiles.indexWhere((p) => p.id == profileId);
-      if (index == -1) return;
+      if (index == -1) {
+        debugPrint('❌ Profile not found in local list');
+        return;
+      }
 
       final newWatchlist = List<int>.from(_profiles[index].watchlist);
       if (!newWatchlist.contains(contentId)) {
         newWatchlist.add(contentId);
 
-        await _firestore
-            .collection('users')
-            .doc(userId)
-            .collection('profiles')
-            .doc(profileId)
-            .update({'watchlist': newWatchlist});
+        debugPrint('🔵 Updating Firestore with watchlist: $newWatchlist');
 
+        try {
+          // Use set with merge instead of update to create document if it doesn't exist
+          // Add timeout to prevent hanging
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('profiles')
+              .doc(profileId)
+              .set({'watchlist': newWatchlist}, SetOptions(merge: true))
+              .timeout(
+                const Duration(seconds: 10),
+                onTimeout: () {
+                  debugPrint(
+                    '⏱️ Firestore operation timed out after 10 seconds',
+                  );
+                  throw TimeoutException('Firestore operation timed out');
+                },
+              );
+
+          debugPrint('✅ Firestore updated successfully');
+        } catch (firestoreError) {
+          debugPrint('❌ Firestore error: $firestoreError');
+          // Continue anyway to update local state
+        }
+
+        // Update local state regardless of Firestore success
         _profiles[index] = _profiles[index].copyWith(watchlist: newWatchlist);
 
         if (_currentProfile?.id == profileId) {
           _currentProfile = _profiles[index];
+          debugPrint(
+            '🔄 Updated currentProfile: ${_currentProfile?.name}, watchlist: ${_currentProfile?.watchlist}',
+          );
         }
 
+        debugPrint('📢 Calling notifyListeners() - UI should rebuild now');
         notifyListeners();
+        debugPrint(
+          '✅ Added to watchlist successfully - notifyListeners() called',
+        );
+      } else {
+        debugPrint('⚠️ Content already in watchlist');
       }
-    } catch (e) {
-      debugPrint('Error adding to watchlist: $e');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error adding to watchlist: $e');
+      debugPrint('Stack trace: $stackTrace');
+      rethrow; // Rethrow so UI can show error
     }
   }
 
@@ -220,18 +260,34 @@ class ProfileProvider extends ChangeNotifier {
     int contentId,
   ) async {
     try {
+      debugPrint(
+        '🔵 Removing from watchlist: userId=$userId, profileId=$profileId, contentId=$contentId',
+      );
+
       final index = _profiles.indexWhere((p) => p.id == profileId);
-      if (index == -1) return;
+      if (index == -1) {
+        debugPrint('❌ Profile not found in local list');
+        return;
+      }
 
       final newWatchlist = List<int>.from(_profiles[index].watchlist);
       newWatchlist.remove(contentId);
 
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('profiles')
-          .doc(profileId)
-          .update({'watchlist': newWatchlist});
+      debugPrint('🔵 Updating Firestore with watchlist: $newWatchlist');
+
+      try {
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('profiles')
+            .doc(profileId)
+            .set({'watchlist': newWatchlist}, SetOptions(merge: true))
+            .timeout(const Duration(seconds: 10));
+
+        debugPrint('✅ Firestore updated successfully');
+      } catch (firestoreError) {
+        debugPrint('❌ Firestore error: $firestoreError');
+      }
 
       _profiles[index] = _profiles[index].copyWith(watchlist: newWatchlist);
 
@@ -239,9 +295,13 @@ class ProfileProvider extends ChangeNotifier {
         _currentProfile = _profiles[index];
       }
 
+      debugPrint('📢 Calling notifyListeners()');
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error removing from watchlist: $e');
+      debugPrint('✅ Removed from watchlist successfully');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error removing from watchlist: $e');
+      debugPrint('Stack trace: $stackTrace');
+      rethrow;
     }
   }
 
@@ -251,19 +311,35 @@ class ProfileProvider extends ChangeNotifier {
     int contentId,
   ) async {
     try {
+      debugPrint(
+        '🔵 Adding to favorites: userId=$userId, profileId=$profileId, contentId=$contentId',
+      );
+
       final index = _profiles.indexWhere((p) => p.id == profileId);
-      if (index == -1) return;
+      if (index == -1) {
+        debugPrint('❌ Profile not found in local list');
+        return;
+      }
 
       final newFavorites = List<int>.from(_profiles[index].favorites);
       if (!newFavorites.contains(contentId)) {
         newFavorites.add(contentId);
 
-        await _firestore
-            .collection('users')
-            .doc(userId)
-            .collection('profiles')
-            .doc(profileId)
-            .update({'favorites': newFavorites});
+        debugPrint('🔵 Updating Firestore with favorites: $newFavorites');
+
+        try {
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('profiles')
+              .doc(profileId)
+              .set({'favorites': newFavorites}, SetOptions(merge: true))
+              .timeout(const Duration(seconds: 10));
+
+          debugPrint('✅ Firestore updated successfully');
+        } catch (firestoreError) {
+          debugPrint('❌ Firestore error: $firestoreError');
+        }
 
         _profiles[index] = _profiles[index].copyWith(favorites: newFavorites);
 
@@ -271,10 +347,16 @@ class ProfileProvider extends ChangeNotifier {
           _currentProfile = _profiles[index];
         }
 
+        debugPrint('📢 Calling notifyListeners()');
         notifyListeners();
+        debugPrint('✅ Added to favorites successfully');
+      } else {
+        debugPrint('⚠️ Content already in favorites');
       }
-    } catch (e) {
-      debugPrint('Error adding to favorites: $e');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error adding to favorites: $e');
+      debugPrint('Stack trace: $stackTrace');
+      rethrow;
     }
   }
 
@@ -284,18 +366,29 @@ class ProfileProvider extends ChangeNotifier {
     int contentId,
   ) async {
     try {
+      debugPrint(
+        '🔵 Removing from favorites: userId=$userId, profileId=$profileId, contentId=$contentId',
+      );
+
       final index = _profiles.indexWhere((p) => p.id == profileId);
-      if (index == -1) return;
+      if (index == -1) {
+        debugPrint('❌ Profile not found in local list');
+        return;
+      }
 
       final newFavorites = List<int>.from(_profiles[index].favorites);
       newFavorites.remove(contentId);
+
+      debugPrint('🔵 Updating Firestore with favorites: $newFavorites');
 
       await _firestore
           .collection('users')
           .doc(userId)
           .collection('profiles')
           .doc(profileId)
-          .update({'favorites': newFavorites});
+          .set({'favorites': newFavorites}, SetOptions(merge: true));
+
+      debugPrint('✅ Firestore updated successfully');
 
       _profiles[index] = _profiles[index].copyWith(favorites: newFavorites);
 
@@ -304,17 +397,28 @@ class ProfileProvider extends ChangeNotifier {
       }
 
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error removing from favorites: $e');
+      debugPrint('✅ Removed from favorites successfully');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error removing from favorites: $e');
+      debugPrint('Stack trace: $stackTrace');
+      rethrow;
     }
   }
 
   bool isInWatchlist(int contentId) {
-    return _currentProfile?.watchlist.contains(contentId) ?? false;
+    final result = _currentProfile?.watchlist.contains(contentId) ?? false;
+    debugPrint(
+      '🔍 isInWatchlist($contentId): $result, currentProfile: ${_currentProfile?.name}, watchlist: ${_currentProfile?.watchlist}',
+    );
+    return result;
   }
 
   bool isInFavorites(int contentId) {
-    return _currentProfile?.favorites.contains(contentId) ?? false;
+    final result = _currentProfile?.favorites.contains(contentId) ?? false;
+    debugPrint(
+      '🔍 isInFavorites($contentId): $result, currentProfile: ${_currentProfile?.name}, favorites: ${_currentProfile?.favorites}',
+    );
+    return result;
   }
 
   void clearProfiles() {

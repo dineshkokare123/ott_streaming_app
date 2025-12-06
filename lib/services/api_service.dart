@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:cupertino_http/cupertino_http.dart';
 import 'package:http/http.dart' as http;
 import '../models/content.dart';
 import '../constants/api_constants.dart';
@@ -9,27 +11,39 @@ class ApiService {
   factory ApiService() => _instance;
   ApiService._internal();
 
+  final http.Client _client = (Platform.isIOS || Platform.isMacOS)
+      ? CupertinoClient.defaultSessionConfiguration()
+      : http.Client();
+
   // Helper method for retrying requests
   Future<http.Response> _getWithRetry(
     Uri uri, {
     Map<String, String>? headers,
     int retries = 3,
   }) async {
+    final defaultHeaders = {
+      'User-Agent': 'StreamVibe/1.0.0 (iOS)',
+      'Accept': 'application/json',
+      'Host': uri.host, // Crucial when accessing by IP
+    };
+    if (headers != null) {
+      defaultHeaders.addAll(headers);
+    }
+
     for (int i = 0; i < retries; i++) {
-      final client = http.Client();
       try {
-        final response = await client.get(uri, headers: headers);
+        final response = await _client.get(uri, headers: defaultHeaders);
         return response;
       } catch (e) {
+        if (e.toString().contains('Connection reset by peer')) {
+          await Future.delayed(const Duration(milliseconds: 1000));
+        }
+
         if (i == retries - 1) rethrow;
         debugPrint(
           'Request failed (attempt ${i + 1}/$retries): $e. Retrying...',
         );
-        await Future.delayed(
-          Duration(seconds: 1 * (i + 1)),
-        ); // Exponential backoff
-      } finally {
-        client.close();
+        await Future.delayed(Duration(seconds: 1 * (i + 1)));
       }
     }
     throw Exception('Failed after $retries retries');
@@ -320,6 +334,35 @@ class ApiService {
       debugPrint('Error getting IMDb ID: $e');
     }
     return null;
+  }
+
+  // Get Similar Content
+  Future<List<Content>> getSimilarContent(int id, String mediaType) async {
+    try {
+      final endpoint = mediaType == 'movie'
+          ? '/movie/$id/similar'
+          : '/tv/$id/similar';
+
+      final response = await _getWithRetry(
+        Uri.parse(
+          '${ApiConstants.baseUrl}$endpoint?api_key=${ApiConstants.apiKey}',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) {
+          json['media_type'] = mediaType;
+          return Content.fromJson(json);
+        }).toList();
+      } else {
+        throw Exception('Failed to load similar content');
+      }
+    } catch (e) {
+      debugPrint('Error fetching similar content: $e');
+      return [];
+    }
   }
 
   // Get OTT Details

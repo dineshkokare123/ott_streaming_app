@@ -117,26 +117,6 @@ class _SignUpScreenState extends State<SignUpScreen>
     }
   }
 
-  Future<void> _handleFacebookSignIn() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    final success = await authProvider.signInWithFacebook();
-
-    if (success && mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-        (route) => false,
-      );
-    } else if (mounted && authProvider.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.error!),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -521,39 +501,6 @@ class _SignUpScreenState extends State<SignUpScreen>
                     color: AppColors.backgroundLight,
                     width: 2,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  backgroundColor: AppColors.backgroundLight,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Facebook Sign Up Button
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: OutlinedButton.icon(
-                onPressed: authProvider.isLoading
-                    ? null
-                    : _handleFacebookSignIn,
-                icon: const Icon(
-                  Icons.facebook,
-                  color: Color(0xFF1877F2),
-                  size: 28,
-                ),
-                label: const Text(
-                  'Continue with Facebook',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFF1877F2), width: 2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

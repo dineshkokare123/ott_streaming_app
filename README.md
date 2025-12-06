@@ -79,37 +79,59 @@ https://github.com/user-attachments/assets/8936463c-b7ab-47a3-9519-c86cf99447a9
 
 <div align="center">
 
-### 🔐 Authentication & Profiles
+### 📱 Core Experience & Features
 
 <p float="left">
-  <img src="screenshots/01_login_screen.png" width="250" alt="Login Screen" />
-  <img src="screenshots/02_signup_screen.png" width="250" alt="Sign Up Screen" />
-  <img src="screenshots/06_profile_screen.png" width="250" alt="Profile Screen" />
+  <img src="screenshots/04_home_screen.png" width="220" alt="Home Screen" />
+  <img src="screenshots/search_results.png" width="220" alt="Smart Search" />
+  <img src="screenshots/quality_selection.png" width="220" alt="Video Quality" />
 </p>
 
-*Secure auth with multi-profile support and detailed user settings*
+*Smart search, quality controls, and rich discovery*
 
 ---
 
-### 🏠 Home & Discovery
+### 🎮 Gamification & Engagement
 
 <p float="left">
-  <img src="screenshots/04_home_screen.png" width="250" alt="Home Screen Loading" />
-  <img src="screenshots/05_home_with_content.png" width="250" alt="Home with Content" />
+  <img src="screenshots/gamification_levelup.png" width="220" alt="Level Up with Confetti" />
+  <img src="screenshots/achievements.png" width="220" alt="Achievements System" />
+  <img src="screenshots/language_selection.png" width="220" alt="Multi-Language Support" />
 </p>
 
-*Rich content discovery with "Trending", "Popular", and "Recommended For You"*
+*Level up, unlock badges, and explore in your language*
 
 ---
 
-### 🎬 Playback & Details
+### 🔐 Auth & Profile
 
 <p float="left">
-  <img src="screenshots/07_movie_detail.png" width="250" alt="Movie Detail" />
-  <img src="screenshots/09_video_player.png" width="250" alt="Video Player" />
+  <img src="screenshots/01_login_screen.png" width="220" alt="Login Screen" />
+  <img src="screenshots/06_profile_screen.png" width="220" alt="Profile Screen" />
 </p>
 
-*Immersive details page and full-featured video player*
+*Secure authentication and personalized profiles*
+
+---
+
+### 💬 Reviews & Social
+
+<p float="left">
+  <img src="screenshots/reviews_ratings.png" width="220" alt="Rating Summary" />
+  <img src="screenshots/reviews_writing.png" width="220" alt="Write Review" />
+</p>
+
+*Rate content, write reviews, and share your thoughts*
+
+---
+
+### ⬇️ Offline Mode
+
+<p float="left">
+  <img src="screenshots/downloads_screen.png" width="220" alt="Downloads Screen" />
+</p>
+
+*Download your favorite content to watch anywhere, anytime*
 
 </div>
 

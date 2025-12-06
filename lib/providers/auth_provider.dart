@@ -99,25 +99,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // Sign in with Facebook
-  Future<bool> signInWithFacebook() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    try {
-      _currentUser = await _authService.signInWithFacebook();
-      _isLoading = false;
-      notifyListeners();
-      return _currentUser != null;
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
-  }
-
   // Sign out
   Future<void> signOut() async {
     await _authService.signOut();

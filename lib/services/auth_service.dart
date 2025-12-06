@@ -159,11 +159,6 @@ class AuthService {
     }
   }
 
-  // Sign in with Facebook
-  Future<AppUser?> signInWithFacebook() async {
-    throw 'Facebook sign-in is currently disabled.';
-  }
-
   // Sign out
   Future<void> signOut() async {
     try {
@@ -263,7 +258,7 @@ class AuthService {
       case 'weak-password':
         return 'The password is too weak.';
       default:
-        return 'An error occurred. Please try again.';
+        return 'Error: ${e.code}. ${e.message ?? "Please try again."}';
     }
   }
 }

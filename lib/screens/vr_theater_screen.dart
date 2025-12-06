@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
 class VRTheaterScreen extends StatefulWidget {
   const VRTheaterScreen({super.key});
 
@@ -9,6 +11,10 @@ class VRTheaterScreen extends StatefulWidget {
 }
 
 class _VRTheaterScreenState extends State<VRTheaterScreen> {
+  late YoutubePlayerController _leftController;
+  late YoutubePlayerController _rightController;
+  final String _videoId = 'd9My665987w'; // Interstellar Trailer
+
   @override
   void initState() {
     super.initState();
@@ -19,6 +25,30 @@ class _VRTheaterScreenState extends State<VRTheaterScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+
+    _leftController = YoutubePlayerController(
+      initialVideoId: _videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        hideControls: true,
+        enableCaption: false,
+        isLive: false,
+        forceHD: true,
+      ),
+    );
+
+    _rightController = YoutubePlayerController(
+      initialVideoId: _videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: true, // Mute one side to prevent echo and performance handling
+        hideControls: true,
+        enableCaption: false,
+        isLive: false,
+        forceHD: true,
+      ),
+    );
   }
 
   @override
@@ -26,6 +56,8 @@ class _VRTheaterScreenState extends State<VRTheaterScreen> {
     // Restore UI and orientation
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    _leftController.dispose();
+    _rightController.dispose();
     super.dispose();
   }
 
@@ -35,15 +67,15 @@ class _VRTheaterScreenState extends State<VRTheaterScreen> {
       backgroundColor: Colors.black,
       body: Row(
         children: [
-          Expanded(child: _buildEyeView(isLeft: true)),
+          Expanded(child: _buildEyeView(_leftController)),
           Container(width: 2, color: Colors.black), // Divider
-          Expanded(child: _buildEyeView(isLeft: false)),
+          Expanded(child: _buildEyeView(_rightController)),
         ],
       ),
     );
   }
 
-  Widget _buildEyeView({required bool isLeft}) {
+  Widget _buildEyeView(YoutubePlayerController controller) {
     return Stack(
       children: [
         // Virtual Environment Background (Cinema)
@@ -76,27 +108,15 @@ class _VRTheaterScreenState extends State<VRTheaterScreen> {
               ],
               border: Border.all(color: Colors.white10, width: 2),
             ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // Simulated Content
-                Image.network(
-                  'https://image.tmdb.org/t/p/w500/8c4a8kE7PizaGQQnditMmI1xbRp.jpg',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
-                const Icon(
-                  Icons.play_circle_filled,
-                  color: Colors.white,
-                  size: 50,
-                ),
-              ],
+            child: YoutubePlayer(
+              controller: controller,
+              showVideoProgressIndicator: false,
+              aspectRatio: 16 / 9,
             ),
           ),
         ),
 
-        // HUD / Controls (Curved effect simulated by padding)
+        // HUD / Controls
         Positioned(
           bottom: 20,
           left: 50,

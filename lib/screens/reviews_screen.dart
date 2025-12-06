@@ -526,8 +526,12 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             ElevatedButton(
               onPressed: rating > 0
                   ? () async {
+                      debugPrint(
+                        '🔵 Submit button pressed - rating: $rating, reviewText: ${textController.text}',
+                      );
                       try {
                         if (existingReview != null) {
+                          debugPrint('🔵 Updating existing review...');
                           await provider.updateReview(
                             contentId: widget.content.id.toString(),
                             reviewId: existingReview.id,
@@ -537,6 +541,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                                 : textController.text.trim(),
                           );
                         } else {
+                          debugPrint('🔵 Submitting new review...');
                           await provider.submitReview(
                             contentId: widget.content.id.toString(),
                             userId: authProvider.currentUser!.id,
@@ -548,6 +553,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                                 : textController.text.trim(),
                           );
                         }
+                        debugPrint('✅ Review submitted successfully');
                         if (context.mounted) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -562,6 +568,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                           );
                         }
                       } catch (e) {
+                        debugPrint('❌ Error submitting review: $e');
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

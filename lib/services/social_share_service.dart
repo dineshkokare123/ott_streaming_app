@@ -42,9 +42,6 @@ class SocialShareService {
     String? url;
 
     switch (platform) {
-      case SocialPlatform.facebook:
-        url = 'https://www.facebook.com/sharer/sharer.php?u=$encodedMessage';
-        break;
       case SocialPlatform.twitter:
         url = 'https://twitter.com/intent/tweet?text=$encodedMessage';
         break;
@@ -197,14 +194,12 @@ Watch ${content.title} on StreamVibe!
 }
 
 /// Supported social media platforms
-enum SocialPlatform { facebook, twitter, whatsapp, telegram, instagram }
+enum SocialPlatform { twitter, whatsapp, telegram, instagram }
 
 /// Extension to get platform names and icons
 extension SocialPlatformExtension on SocialPlatform {
   String get name {
     switch (this) {
-      case SocialPlatform.facebook:
-        return 'Facebook';
       case SocialPlatform.twitter:
         return 'Twitter';
       case SocialPlatform.whatsapp:
@@ -218,8 +213,6 @@ extension SocialPlatformExtension on SocialPlatform {
 
   IconData get icon {
     switch (this) {
-      case SocialPlatform.facebook:
-        return Icons.facebook;
       case SocialPlatform.twitter:
         return Icons.flutter_dash; // Use appropriate icon
       case SocialPlatform.whatsapp:
@@ -233,8 +226,6 @@ extension SocialPlatformExtension on SocialPlatform {
 
   Color get color {
     switch (this) {
-      case SocialPlatform.facebook:
-        return const Color(0xFF1877F2);
       case SocialPlatform.twitter:
         return const Color(0xFF1DA1F2);
       case SocialPlatform.whatsapp:

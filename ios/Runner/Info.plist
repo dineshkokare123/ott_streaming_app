@@ -30,25 +30,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.921305845988-u6gvsr7pag5utvnks8rsefpil1oh0m6d</string>
-				<string>fb1606869573633520</string>
+
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>FacebookAppID</key>
-	<string>1606869573633520</string>
-	<key>FacebookClientToken</key>
-	<string>31c11d9b66d2f23945962e6f080dc424</string>
-	<key>FacebookDisplayName</key>
-	<string>StreamVibe</string>
+
 	<key>GIDClientID</key>
 	<string>921305845988-u6gvsr7pag5utvnks8rsefpil1oh0m6d.apps.googleusercontent.com</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-		<string>fb-messenger-share-api</string>
-	</array>
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -66,5 +57,15 @@
 	</array>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
