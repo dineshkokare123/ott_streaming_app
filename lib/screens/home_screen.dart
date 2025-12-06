@@ -5,6 +5,7 @@ import '../constants/app_colors.dart';
 import '../widgets/content_row.dart';
 import '../widgets/animated_bottom_nav.dart';
 import '../widgets/shimmer_loading.dart';
+import '../services/localization_service.dart';
 import 'content_detail_screen.dart';
 import 'search_screen.dart';
 import 'watchlist_screen.dart';
@@ -73,8 +74,8 @@ class _HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ContentProvider>(
-      builder: (context, contentProvider, child) {
+    return Consumer2<ContentProvider, LocalizationService>(
+      builder: (context, contentProvider, localization, child) {
         if (contentProvider.isLoading) {
           return CustomScrollView(
             slivers: [
@@ -220,7 +221,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Trending Content
                     ContentRow(
-                      title: 'Trending Now',
+                      title: 'trending_now'.tr(localization),
                       content: contentProvider.trendingContent,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -230,7 +231,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Popular Movies
                     ContentRow(
-                      title: 'Popular Movies',
+                      title: 'popular_movies'.tr(localization),
                       content: contentProvider.popularMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -240,7 +241,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Top Rated Movies
                     ContentRow(
-                      title: 'Top Rated Movies',
+                      title: 'top_rated'.tr(localization),
                       content: contentProvider.topRatedMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -250,7 +251,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Popular TV Shows
                     ContentRow(
-                      title: 'Popular TV Shows',
+                      title: 'popular_tv_shows'.tr(localization),
                       content: contentProvider.popularTVShows,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -260,7 +261,9 @@ class _HomeTab extends StatelessWidget {
 
                     // Action Movies
                     ContentRow(
-                      title: 'Action Movies',
+                      title: 'Action Movies'.tr(
+                        localization,
+                      ), // Fallback: just use string if not in dict
                       content: contentProvider.actionMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -270,7 +273,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Sci-Fi Movies
                     ContentRow(
-                      title: 'Sci-Fi Movies',
+                      title: 'Sci-Fi Movies'.tr(localization),
                       content: contentProvider.scifiMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -280,7 +283,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Comedy Movies
                     ContentRow(
-                      title: 'Comedy Movies',
+                      title: 'Comedy Movies'.tr(localization),
                       content: contentProvider.comedyMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),
@@ -290,7 +293,7 @@ class _HomeTab extends StatelessWidget {
 
                     // Horror Movies
                     ContentRow(
-                      title: 'Horror Movies',
+                      title: 'Horror Movies'.tr(localization),
                       content: contentProvider.horrorMovies,
                       onContentTap: (content) =>
                           _navigateToDetail(context, content),

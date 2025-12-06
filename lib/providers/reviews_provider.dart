@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/review.dart';
@@ -9,6 +10,34 @@ class ReviewsProvider extends ChangeNotifier {
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
+
+  // Helper for retrying Firestore operations
+  Future<T> _retryOperation<T>(
+    Future<T> Function() operation, {
+    int retries = 3,
+  }) async {
+    for (int i = 0; i < retries; i++) {
+      try {
+        return await operation();
+      } catch (e) {
+        if (i == retries - 1) rethrow;
+        // Only retry on unavailable/network errors
+        if (e.toString().contains('unavailable') ||
+            e.toString().contains('network') ||
+            e.toString().contains('connection')) {
+          debugPrint(
+            'Firestore operation failed (attempt ${i + 1}/$retries): $e. Retrying...',
+          );
+          await Future.delayed(
+            Duration(seconds: 1 * (i + 1)),
+          ); // Exponential backoff
+        } else {
+          rethrow;
+        }
+      }
+    }
+    throw Exception('Failed after $retries retries');
+  }
 
   List<Review> getReviews(String contentId) {
     return _reviewsCache[contentId] ?? [];
@@ -32,13 +61,15 @@ class ReviewsProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final snapshot = await _firestore
-          .collection('content_reviews')
-          .doc(contentId)
-          .collection('reviews')
-          .orderBy('createdAt', descending: true)
-          .limit(50)
-          .get();
+      final snapshot = await _retryOperation(
+        () => _firestore
+            .collection('content_reviews')
+            .doc(contentId)
+            .collection('reviews')
+            .orderBy('createdAt', descending: true)
+            .limit(50)
+            .get(),
+      );
 
       _reviewsCache[contentId] = snapshot.docs
           .map((doc) => Review.fromJson(doc.data()))
@@ -57,10 +88,9 @@ class ReviewsProvider extends ChangeNotifier {
 
   Future<void> _loadRatingSummary(String contentId) async {
     try {
-      final doc = await _firestore
-          .collection('content_ratings')
-          .doc(contentId)
-          .get();
+      final doc = await _retryOperation(
+        () => _firestore.collection('content_ratings').doc(contentId).get(),
+      );
 
       if (doc.exists) {
         _ratingsCache[contentId] = ContentRating.fromJson(doc.data()!);

@@ -17,7 +17,9 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
   @override
   void initState() {
     super.initState();
-    _loadWatchlist();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadWatchlist();
+    });
   }
 
   void _loadWatchlist() {

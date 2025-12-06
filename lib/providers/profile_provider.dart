@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_profile.dart';
+import '../models/user.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,14 +14,14 @@ class ProfileProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get hasProfiles => _profiles.isNotEmpty;
 
-  Future<void> loadProfiles(String userId) async {
+  Future<void> loadProfiles(AppUser user) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       final snapshot = await _firestore
           .collection('users')
-          .doc(userId)
+          .doc(user.id)
           .collection('profiles')
           .orderBy('createdAt')
           .get();
@@ -28,6 +29,27 @@ class ProfileProvider extends ChangeNotifier {
       _profiles = snapshot.docs
           .map((doc) => UserProfile.fromJson(doc.data()))
           .toList();
+
+      // Self-heal: Create default profile if none exists
+      if (_profiles.isEmpty) {
+        final profileId = DateTime.now().millisecondsSinceEpoch.toString();
+        final defaultProfile = UserProfile(
+          id: profileId,
+          userId: user.id,
+          name: user.displayName,
+          avatarUrl: user.photoUrl ?? '🚀',
+          createdAt: DateTime.now(),
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(user.id)
+            .collection('profiles')
+            .doc(profileId)
+            .set(defaultProfile.toJson());
+
+        _profiles.add(defaultProfile);
+      }
 
       // Auto-select first profile if none selected
       if (_currentProfile == null && _profiles.isNotEmpty) {

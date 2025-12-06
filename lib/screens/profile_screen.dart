@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/profile_provider.dart';
+import '../services/localization_service.dart';
+
 import '../constants/app_colors.dart';
 import '../widgets/glass_container.dart';
 import 'login_screen.dart';
@@ -11,13 +14,17 @@ import 'downloads_screen.dart';
 import 'profile_selection_screen.dart';
 import 'parental_controls_screen.dart';
 import 'notifications_screen.dart';
-import '../providers/profile_provider.dart';
+import 'language_selection_screen.dart';
+import 'achievements_screen.dart';
+import 'analytics_screen.dart';
+import 'feature_showcase_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localization = Provider.of<LocalizationService>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Consumer<AuthProvider>(
@@ -188,8 +195,8 @@ class ProfileScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Account',
+                      Text(
+                        'account'.tr(localization),
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
@@ -200,7 +207,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _buildMenuItem(
                         icon: Icons.person_outline,
-                        title: 'Edit Profile',
+                        title: 'edit_profile'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -213,7 +220,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       _buildMenuItem(
                         icon: Icons.notifications_outlined,
-                        title: 'Notifications',
+                        title: 'notifications'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -226,7 +233,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       _buildMenuItem(
                         icon: Icons.security,
-                        title: 'Privacy & Security',
+                        title: 'privacy_security'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -237,11 +244,65 @@ class ProfileScreen extends StatelessWidget {
                           );
                         },
                       ),
+                      const SizedBox(height: 12),
+                      _buildMenuItem(
+                        icon: Icons.language,
+                        title: 'language'.tr(localization),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const LanguageSelectionScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuItem(
+                        icon: Icons.emoji_events_outlined,
+                        title: 'Achievements',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AchievementsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuItem(
+                        icon: Icons.bar_chart,
+                        title: 'Your Stats',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AnalyticsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuItem(
+                        icon: Icons.rocket_launch,
+                        title: 'New Features 🚀',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const FeatureShowcaseScreen(),
+                            ),
+                          );
+                        },
+                      ),
 
                       const SizedBox(height: 32),
 
-                      const Text(
-                        'Content',
+                      Text(
+                        'content'.tr(localization),
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
@@ -252,7 +313,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _buildMenuItem(
                         icon: Icons.playlist_play,
-                        title: 'My List',
+                        title: 'my_list'.tr(localization),
                         onTap: () {
                           // Navigate to Watchlist (if not already on tab)
                           // Or push WatchlistScreen
@@ -267,7 +328,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       _buildMenuItem(
                         icon: Icons.history,
-                        title: 'Watch History',
+                        title: 'watch_history'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -280,7 +341,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       _buildMenuItem(
                         icon: Icons.download_done,
-                        title: 'Downloads',
+                        title: 'downloads'.tr(localization),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -314,8 +375,8 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
-                            'Sign Out',
+                          child: Text(
+                            'sign_out'.tr(localization),
                             style: TextStyle(
                               color: AppColors.error,
                               fontSize: 16,

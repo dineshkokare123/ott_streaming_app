@@ -46,12 +46,16 @@ class ContentCard extends StatelessWidget {
                       imageUrl: ApiConstants.getPosterUrl(content.posterPath),
                       width: width,
                       height: height,
+                      memCacheWidth: (width * 2)
+                          .toInt(), // Optimize memory usage
+                      memCacheHeight: (height * 2).toInt(),
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: AppColors.shimmerBase,
                         child: const Center(
                           child: CircularProgressIndicator(
                             color: AppColors.primary,
+                            strokeWidth: 2,
                           ),
                         ),
                       ),

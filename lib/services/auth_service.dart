@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user.dart';
+import '../models/user_profile.dart';
 
 class AuthService {
   FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -62,6 +63,23 @@ class AuthService {
             .doc(credential.user!.uid)
             .set(appUser.toJson());
 
+        // Create default profile
+        final profileId = DateTime.now().millisecondsSinceEpoch.toString();
+        final defaultProfile = UserProfile(
+          id: profileId,
+          userId: credential.user!.uid,
+          name: displayName,
+          avatarUrl: '🚀',
+          createdAt: DateTime.now(),
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(credential.user!.uid)
+            .collection('profiles')
+            .doc(profileId)
+            .set(defaultProfile.toJson());
+
         return appUser;
       }
       return null;
@@ -114,6 +132,23 @@ class AuthService {
             .collection('users')
             .doc(userCredential.user!.uid)
             .set(appUser.toJson());
+
+        // Create default profile
+        final profileId = DateTime.now().millisecondsSinceEpoch.toString();
+        final defaultProfile = UserProfile(
+          id: profileId,
+          userId: userCredential.user!.uid,
+          name: userCredential.user!.displayName ?? 'User',
+          avatarUrl: userCredential.user!.photoURL ?? '🚀',
+          createdAt: DateTime.now(),
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .collection('profiles')
+            .doc(profileId)
+            .set(defaultProfile.toJson());
 
         return appUser;
       }

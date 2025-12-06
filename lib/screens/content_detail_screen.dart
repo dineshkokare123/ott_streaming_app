@@ -15,6 +15,7 @@ import 'video_player_screen.dart';
 import 'full_video_player_screen.dart';
 import 'reviews_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../services/localization_service.dart';
 
 class ContentDetailScreen extends StatelessWidget {
   final Content content;
@@ -23,6 +24,7 @@ class ContentDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = Provider.of<LocalizationService>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
@@ -195,8 +197,8 @@ class ContentDetailScreen extends StatelessWidget {
                               ),
                               label: Text(
                                 content.mediaType == 'movie'
-                                    ? 'Watch Movie'
-                                    : 'Watch Episode',
+                                    ? '${'play'.tr(localization)} ${'movie'.tr(localization)}'
+                                    : '${'play'.tr(localization)} ${'episode'.tr(localization)}',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -287,7 +289,7 @@ class ContentDetailScreen extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.movie_creation_outlined,
                                   ),
-                                  label: const Text('Trailer'),
+                                  label: Text('trailer'.tr(localization)),
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: AppColors.textPrimary,
                                     side: const BorderSide(
@@ -310,16 +312,39 @@ class ContentDetailScreen extends StatelessWidget {
                                 child: OutlinedButton.icon(
                                   onPressed: () async {
                                     final user = authProvider.currentUser;
-                                    final profile =
-                                        profileProvider.currentProfile;
-
-                                    if (user == null || profile == null) {
+                                    if (user == null) {
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
                                         const SnackBar(
                                           content: Text(
-                                            'Please select a profile first',
+                                            'Please sign in to use this feature',
+                                          ),
+                                          backgroundColor: AppColors.error,
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    var profile =
+                                        profileProvider.currentProfile;
+
+                                    // Auto-select first profile if none selected but profiles exist
+                                    if (profile == null &&
+                                        profileProvider.profiles.isNotEmpty) {
+                                      profile = profileProvider.profiles.first;
+                                      profileProvider.switchProfile(profile);
+                                    }
+
+                                    if (profile == null) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'select_profile_first'.tr(
+                                              localization,
+                                            ),
                                           ),
                                           backgroundColor: AppColors.error,
                                         ),
@@ -350,8 +375,12 @@ class ContentDetailScreen extends StatelessWidget {
                                           SnackBar(
                                             content: Text(
                                               isInWatchlist
-                                                  ? 'Removed from My List'
-                                                  : 'Added to My List',
+                                                  ? 'removed_from_list'.tr(
+                                                      localization,
+                                                    )
+                                                  : 'added_to_list'.tr(
+                                                      localization,
+                                                    ),
                                             ),
                                             duration: const Duration(
                                               seconds: 2,
@@ -380,7 +409,7 @@ class ContentDetailScreen extends StatelessWidget {
                                         : AppColors.textPrimary,
                                   ),
                                   label: Text(
-                                    'My List',
+                                    'my_list'.tr(localization),
                                     style: TextStyle(
                                       color: isInWatchlist
                                           ? AppColors.primary
@@ -412,14 +441,34 @@ class ContentDetailScreen extends StatelessWidget {
                               IconButton(
                                 onPressed: () async {
                                   final user = authProvider.currentUser;
-                                  final profile =
-                                      profileProvider.currentProfile;
-
-                                  if (user == null || profile == null) {
+                                  if (user == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
-                                          'Please select a profile first',
+                                          'Please sign in to use this feature',
+                                        ),
+                                        backgroundColor: AppColors.error,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  var profile = profileProvider.currentProfile;
+
+                                  // Auto-select first profile if none selected but profiles exist
+                                  if (profile == null &&
+                                      profileProvider.profiles.isNotEmpty) {
+                                    profile = profileProvider.profiles.first;
+                                    profileProvider.switchProfile(profile);
+                                  }
+
+                                  if (profile == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'select_profile_first'.tr(
+                                            localization,
+                                          ),
                                         ),
                                         backgroundColor: AppColors.error,
                                       ),
@@ -449,8 +498,12 @@ class ContentDetailScreen extends StatelessWidget {
                                         SnackBar(
                                           content: Text(
                                             isInFavorites
-                                                ? 'Removed from Favorites'
-                                                : 'Added to Favorites',
+                                                ? 'removed_from_favorites'.tr(
+                                                    localization,
+                                                  )
+                                                : 'added_to_favorites'.tr(
+                                                    localization,
+                                                  ),
                                           ),
                                           duration: const Duration(seconds: 2),
                                           backgroundColor: AppColors.primary,
@@ -624,10 +677,10 @@ class ContentDetailScreen extends StatelessWidget {
                           ),
                           label: Text(
                             isDownloaded
-                                ? 'Downloaded'
+                                ? 'downloaded'.tr(localization)
                                 : isDownloading
                                 ? download?.progressPercent ?? "0%"
-                                : 'Download',
+                                : 'download'.tr(localization),
                           ),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: isDownloaded
@@ -673,7 +726,7 @@ class ContentDetailScreen extends StatelessWidget {
                           label: Text(
                             rating != null
                                 ? '${rating.averageRating.toStringAsFixed(1)} ★ (${rating.totalReviews} reviews)'
-                                : 'Rate & Review',
+                                : 'rate_review'.tr(localization),
                           ),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.textPrimary,
@@ -695,8 +748,8 @@ class ContentDetailScreen extends StatelessWidget {
                   // Overview
                   if (content.overview != null &&
                       content.overview!.isNotEmpty) ...[
-                    const Text(
-                      'Overview',
+                    Text(
+                      'overview'.tr(localization),
                       style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 18,
@@ -758,8 +811,8 @@ class ContentDetailScreen extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'More Like This',
+                          Text(
+                            'more_like_this'.tr(localization),
                             style: TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 18,

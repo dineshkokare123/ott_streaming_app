@@ -12,6 +12,20 @@ import 'providers/download_provider.dart';
 import 'providers/reviews_provider.dart';
 import 'providers/profile_provider.dart';
 import 'providers/notification_provider.dart';
+import 'services/localization_service.dart';
+import 'services/cast_service.dart';
+import 'services/connectivity_service.dart';
+import 'providers/gamification_provider.dart';
+import 'providers/analytics_provider.dart';
+import 'services/theme_service.dart';
+import 'services/subscription_service.dart';
+import 'services/smart_notification_service.dart';
+import 'services/content_extras_service.dart';
+import 'services/social_watching_service.dart';
+import 'services/creator_studio_service.dart';
+import 'services/smart_download_service.dart';
+import 'services/social_service.dart';
+import 'services/appsflyer_service.dart';
 import 'screens/splash_screen.dart';
 import 'constants/app_colors.dart';
 
@@ -67,54 +81,78 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RecommendationsProvider()),
         ChangeNotifierProvider(create: (_) => DownloadProvider()),
         ChangeNotifierProvider(create: (_) => ReviewsProvider()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
-        ChangeNotifierProvider(create: (_) => NotificationProvider()),
-      ],
-      child: MaterialApp(
-        title: 'StreamVibe',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: AppColors.primary,
-          scaffoldBackgroundColor: AppColors.background,
-          colorScheme: const ColorScheme.dark(
-            primary: AppColors.primary,
-            secondary: AppColors.accent,
-            surface: AppColors.backgroundLight,
-            error: AppColors.error,
-          ),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: AppColors.background,
-            elevation: 0,
-            iconTheme: IconThemeData(color: AppColors.textPrimary),
-          ),
-          fontFamily: 'Roboto',
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-            displayMedium: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-            displaySmall: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            bodyLarge: TextStyle(color: AppColors.textPrimary, fontSize: 16),
-            bodyMedium: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-            bodySmall: TextStyle(color: AppColors.textTertiary, fontSize: 12),
-          ),
-          useMaterial3: true,
-        ),
-        home: Consumer<AuthProvider>(
-          builder: (context, authProvider, _) {
-            return SplashScreen(isAuthenticated: authProvider.isAuthenticated);
+        ChangeNotifierProxyProvider<AuthProvider, ProfileProvider>(
+          create: (_) => ProfileProvider(),
+          update: (context, authProvider, previous) {
+            final provider = previous ?? ProfileProvider();
+
+            if (authProvider.currentUser != null &&
+                !provider.hasProfiles &&
+                !provider.isLoading) {
+              // Trigger load in microtask to avoid build-phase side effects
+              Future.microtask(() {
+                provider.loadProfiles(authProvider.currentUser!);
+              });
+            } else if (authProvider.currentUser == null) {
+              provider.clearProfiles();
+            }
+
+            return provider;
           },
         ),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => LocalizationService()),
+        ChangeNotifierProvider(create: (_) => CastService()),
+        ChangeNotifierProvider(create: (_) => ConnectivityService()),
+        ChangeNotifierProvider(create: (_) => GamificationProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, AnalyticsProvider>(
+          create: (_) => AnalyticsProvider(
+            baseUrl: dotenv.env['API_BASE_URL'] ?? 'https://api.example.com/v1',
+            userId: '',
+          ),
+          update: (context, authProvider, previous) {
+            final userId = authProvider.currentUser?.id ?? '';
+            if (previous != null && previous.userId == userId) {
+              return previous;
+            }
+            return AnalyticsProvider(
+              baseUrl:
+                  dotenv.env['API_BASE_URL'] ?? 'https://api.example.com/v1',
+              userId: userId,
+            );
+          },
+        ),
+        ChangeNotifierProvider(create: (_) => ThemeService()),
+        ChangeNotifierProvider(create: (_) => SubscriptionService()),
+        ChangeNotifierProvider(create: (_) => SmartNotificationService()),
+        ChangeNotifierProvider(create: (_) => ContentExtrasService()),
+        ChangeNotifierProvider(create: (_) => SocialWatchingService()),
+        ChangeNotifierProvider(create: (_) => SocialService()),
+        ChangeNotifierProvider(create: (_) => AppsFlyerService()),
+        ChangeNotifierProvider(create: (_) => CreatorStudioService()),
+        ChangeNotifierProxyProvider<DownloadProvider, SmartDownloadService>(
+          create: (context) => SmartDownloadService(
+            Provider.of<DownloadProvider>(context, listen: false),
+          ),
+          update: (context, downloadProvider, previous) =>
+              SmartDownloadService(downloadProvider),
+        ),
+      ],
+      child: Consumer<ThemeService>(
+        builder: (context, themeService, child) {
+          return MaterialApp(
+            title: 'StreamVibe',
+            debugShowCheckedModeBanner: false,
+            theme: themeService.getTheme(),
+            home: Consumer<AuthProvider>(
+              builder: (context, authProvider, _) {
+                return SplashScreen(
+                  isAuthenticated: authProvider.isAuthenticated,
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

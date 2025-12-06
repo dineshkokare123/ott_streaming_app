@@ -34,36 +34,66 @@ class ContentProvider extends ChangeNotifier {
   bool get isSearching => _isSearching;
   String? get error => _error;
 
-  // Load all content
+  // Load all content progressively
   Future<void> loadAllContent() async {
-    _isLoading = true;
+    // Only show full loading state if we have no content at all
+    if (_trendingContent.isEmpty && _popularMovies.isEmpty) {
+      _isLoading = true;
+      notifyListeners();
+    }
+
     _error = null;
-    notifyListeners();
 
     try {
-      final results = await Future.wait([
+      // 1. Critical Content (Above the fold) - Wait for this
+      final criticalResults = await Future.wait([
         _apiService.getTrendingContent(),
         _apiService.getPopularMovies(),
-        _apiService.getTopRatedMovies(),
-        _apiService.getPopularTVShows(),
-        _apiService.getMoviesByGenre(ApiConstants.genreAction),
-        _apiService.getMoviesByGenre(ApiConstants.genreComedy),
-        _apiService.getMoviesByGenre(ApiConstants.genreHorror),
-        _apiService.getMoviesByGenre(ApiConstants.genreSciFi),
       ]);
 
-      _trendingContent = results[0];
-      _popularMovies = results[1];
-      _topRatedMovies = results[2];
-      _popularTVShows = results[3];
-      _actionMovies = results[4];
-      _comedyMovies = results[5];
-      _horrorMovies = results[6];
-      _scifiMovies = results[7];
+      _trendingContent = criticalResults[0];
+      _popularMovies = criticalResults[1];
+
+      // Show content as soon as critical data is ready
+      _isLoading = false;
+      notifyListeners();
+
+      // 2. Secondary Content - Load in parallel but don't block UI
+      // We start these requests and update state as they finish group by group
+
+      // Group A: Top Rated & TV Shows
+      Future.wait([
+        _apiService.getTopRatedMovies(),
+        _apiService.getPopularTVShows(),
+      ]).then((results) {
+        _topRatedMovies = results[0];
+        _popularTVShows = results[1];
+        notifyListeners();
+      });
+
+      // Group B: Genres (can vary in speed)
+      _apiService.getMoviesByGenre(ApiConstants.genreAction).then((results) {
+        _actionMovies = results;
+        notifyListeners();
+      });
+
+      _apiService.getMoviesByGenre(ApiConstants.genreSciFi).then((results) {
+        _scifiMovies = results;
+        notifyListeners();
+      });
+
+      _apiService.getMoviesByGenre(ApiConstants.genreComedy).then((results) {
+        _comedyMovies = results;
+        notifyListeners();
+      });
+
+      _apiService.getMoviesByGenre(ApiConstants.genreHorror).then((results) {
+        _horrorMovies = results;
+        notifyListeners();
+      });
     } catch (e) {
       _error = 'Failed to load content: $e';
       debugPrint(_error);
-    } finally {
       _isLoading = false;
       notifyListeners();
     }
