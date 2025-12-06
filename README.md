@@ -15,7 +15,7 @@ Featuring real-time API integration, advanced animations, liquid glass UI, and a
 • [Screenshots](#-screenshots)
 
 
-https://github.com/user-attachments/assets/8936463c-b7ab-47a3-9519-c86cf99447a9
+
 
 
 • [Installation](#-setup-instructions) 
