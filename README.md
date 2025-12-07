@@ -142,7 +142,7 @@ https://github.com/user-attachments/assets/686de951-dc63-426b-81da-a9b77a9c0f27
 ## 🔧 Setup Instructions
 
 ### 1. Clone the Repository
-
+git clone https://github.com/dineshkokare123/ott_streaming_app
 ```bash
 cd /Users/dineshkokare/Documents/ott_streaming_app
 ```
