@@ -14,6 +14,11 @@ class ContentProvider extends ChangeNotifier {
   List<Content> _comedyMovies = [];
   List<Content> _horrorMovies = [];
   List<Content> _scifiMovies = [];
+  List<Content> _romanceMovies = [];
+  List<Content> _thrillerMovies = [];
+  List<Content> _dramaMovies = [];
+  List<Content> _fantasyMovies = [];
+  List<Content> _animationMovies = [];
   List<Content> _searchResults = [];
 
   bool _isLoading = false;
@@ -29,6 +34,11 @@ class ContentProvider extends ChangeNotifier {
   List<Content> get comedyMovies => _comedyMovies;
   List<Content> get horrorMovies => _horrorMovies;
   List<Content> get scifiMovies => _scifiMovies;
+  List<Content> get romanceMovies => _romanceMovies;
+  List<Content> get thrillerMovies => _thrillerMovies;
+  List<Content> get dramaMovies => _dramaMovies;
+  List<Content> get fantasyMovies => _fantasyMovies;
+  List<Content> get animationMovies => _animationMovies;
   List<Content> get searchResults => _searchResults;
   bool get isLoading => _isLoading;
   bool get isSearching => _isSearching;
@@ -98,8 +108,43 @@ class ContentProvider extends ChangeNotifier {
             await Future.delayed(const Duration(milliseconds: 200));
             return _apiService.getMoviesByGenre(ApiConstants.genreHorror);
           })
-          .then((results) {
+          .then((results) async {
             _horrorMovies = results;
+            notifyListeners();
+
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreRomance);
+          })
+          .then((results) async {
+            _romanceMovies = results;
+            notifyListeners();
+
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreThriller);
+          })
+          .then((results) async {
+            _thrillerMovies = results;
+            notifyListeners();
+
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreDrama);
+          })
+          .then((results) async {
+            _dramaMovies = results;
+            notifyListeners();
+
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreFantasy);
+          })
+          .then((results) async {
+            _fantasyMovies = results;
+            notifyListeners();
+
+            await Future.delayed(const Duration(milliseconds: 200));
+            return _apiService.getMoviesByGenre(ApiConstants.genreAnimation);
+          })
+          .then((results) {
+            _animationMovies = results;
             notifyListeners();
           });
     } catch (e) {

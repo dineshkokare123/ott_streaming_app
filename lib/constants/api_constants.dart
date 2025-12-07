@@ -47,6 +47,10 @@ class ApiConstants {
   static const int genreAnimation = 16;
   static const int genreCrime = 80;
   static const int genreDrama = 18;
+  static const int genreThriller = 53;
+  static const int genreDocumentary = 99;
+  static const int genreFamily = 10751;
+  static const int genreFantasy = 14;
 
   // Image Base URLs
   static const String imageBaseUrl = 'https://image.tmdb.org/t/p';

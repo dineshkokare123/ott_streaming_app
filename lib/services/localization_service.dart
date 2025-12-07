@@ -205,6 +205,11 @@ const Map<String, String> _englishTranslations = {
   'genre_scifi': 'Sci-Fi Movies',
   'genre_comedy': 'Comedy Movies',
   'genre_horror': 'Horror Movies',
+  'genre_romance': 'Romance Movies',
+  'genre_thriller': 'Thriller Movies',
+  'genre_drama': 'Drama Movies',
+  'genre_fantasy': 'Fantasy Movies',
+  'genre_animation': 'Animation Movies',
 
   // Content Details Labels
   'label_popularity': 'Popularity',
@@ -322,6 +327,11 @@ const Map<String, String> _spanishTranslations = {
   'genre_scifi': 'Películas de Ciencia Ficción',
   'genre_comedy': 'Películas de Comedia',
   'genre_horror': 'Películas de Terror',
+  'genre_romance': 'Películas Románticas',
+  'genre_thriller': 'Películas de Suspenso',
+  'genre_drama': 'Películas de Drama',
+  'genre_fantasy': 'Películas de Fantasía',
+  'genre_animation': 'Películas de Animación',
 
   // Auth & Onboarding
   'welcome_back': 'Bienvenido de Nuevo',
@@ -429,6 +439,11 @@ const Map<String, String> _frenchTranslations = {
   'genre_scifi': 'Films de Science-Fiction',
   'genre_comedy': 'Films de Comédie',
   'genre_horror': 'Films d\'Horreur',
+  'genre_romance': 'Films Romantiques',
+  'genre_thriller': 'Films Thriller',
+  'genre_drama': 'Films Dramatiques',
+  'genre_fantasy': 'Films Fantastiques',
+  'genre_animation': 'Films d\'Animation',
 
   // Auth & Onboarding
   'welcome_back': 'Bon Retour',
@@ -536,6 +551,11 @@ const Map<String, String> _germanTranslations = {
   'genre_scifi': 'Science-Fiction-Filme',
   'genre_comedy': 'Komödien',
   'genre_horror': 'Horrorfilme',
+  'genre_romance': 'Liebesfilme',
+  'genre_thriller': 'Thriller',
+  'genre_drama': 'Dramen',
+  'genre_fantasy': 'Fantasyfilme',
+  'genre_animation': 'Animationsfilme',
 
   // Auth & Onboarding
   'welcome_back': 'Willkommen Zurück',
@@ -643,6 +663,11 @@ const Map<String, String> _hindiTranslations = {
   'genre_scifi': 'विज्ञान कथा फ़िल्में',
   'genre_comedy': 'कॉमेडी फ़िल्में',
   'genre_horror': 'डरावनी फ़िल्में',
+  'genre_romance': 'रोमांस फ़िल्में',
+  'genre_thriller': 'थ्रिलर फ़िल्में',
+  'genre_drama': 'ड्रामा फ़िल्में',
+  'genre_fantasy': 'फंतासी फ़िल्में',
+  'genre_animation': 'एनीमेशन फ़िल्में',
 
   // Auth & Onboarding
   'welcome_back': 'वापसी पर स्वागत है',

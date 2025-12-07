@@ -298,6 +298,56 @@ class _HomeTab extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 24),
+
+                    // Romance Movies
+                    ContentRow(
+                      title: 'genre_romance'.tr(localization),
+                      content: contentProvider.romanceMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Thriller Movies
+                    ContentRow(
+                      title: 'genre_thriller'.tr(localization),
+                      content: contentProvider.thrillerMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Drama Movies
+                    ContentRow(
+                      title: 'genre_drama'.tr(localization),
+                      content: contentProvider.dramaMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Fantasy Movies
+                    ContentRow(
+                      title: 'genre_fantasy'.tr(localization),
+                      content: contentProvider.fantasyMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Animation Movies
+                    ContentRow(
+                      title: 'genre_animation'.tr(localization),
+                      content: contentProvider.animationMovies,
+                      onContentTap: (content) =>
+                          _navigateToDetail(context, content),
+                    ),
+
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
